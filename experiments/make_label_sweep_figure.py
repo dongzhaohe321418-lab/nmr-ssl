@@ -38,7 +38,7 @@ def main():
 
     pct = [f * 100 for f in fracs]
 
-    fig, axes = plt.subplots(1, 2, figsize=(8.2, 3.4))
+    fig, axes = plt.subplots(1, 2, figsize=(6.5, 3.0))
 
     ax = axes[0]
     ax.plot(pct, sup_c, "s--", color=BLUE, linewidth=1.5, markersize=7, label="Supervised-1D")

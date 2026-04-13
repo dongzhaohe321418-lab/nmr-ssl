@@ -46,7 +46,7 @@ def main():
     h_vals = [sup1d_h, hz_h, baseline_h]
     colors = [GRAY, RED, GREEN]
 
-    fig, axes = plt.subplots(1, 2, figsize=(8.4, 3.6))
+    fig, axes = plt.subplots(1, 2, figsize=(6.5, 3.0))
     x = np.arange(len(labels))
 
     ax = axes[0]

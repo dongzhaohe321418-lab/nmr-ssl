@@ -83,7 +83,7 @@ def fig_noise_sweep():
     h_mae = [d["noise_sweep"][k]["h_mae"] for k in order]
 
     x = np.arange(len(order))
-    fig, axes = plt.subplots(1, 2, figsize=(7.4, 3.3))
+    fig, axes = plt.subplots(1, 2, figsize=(6.5, 3.0))
 
     ax = axes[0]
     ax.bar(x, c_mae, color=GREEN, edgecolor="black", linewidth=0.5, width=0.58)

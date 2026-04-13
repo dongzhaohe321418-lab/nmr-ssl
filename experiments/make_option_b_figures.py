@@ -55,7 +55,7 @@ def fig_new_headline():
     h_mean = [2.473, 2.607, 0.491, 0.455, v4_h]
     h_std = [0.376, 0.322, 0.066, 0.144, v4_h_std]
 
-    fig, axes = plt.subplots(1, 2, figsize=(9.0, 3.6))
+    fig, axes = plt.subplots(1, 2, figsize=(6.5, 3.0))
     x = np.arange(len(labels))
     colors = [GRAY, BLUE, ORANGE, PURPLE, GREEN]
 

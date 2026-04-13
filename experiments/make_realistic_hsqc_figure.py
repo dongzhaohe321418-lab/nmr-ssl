@@ -32,7 +32,7 @@ def main():
     h_mae = [d["results"][r]["test_h_mae"] for r in recipes]
 
     x = np.arange(len(recipes))
-    fig, axes = plt.subplots(1, 2, figsize=(7.8, 3.4))
+    fig, axes = plt.subplots(1, 2, figsize=(6.5, 3.0))
 
     ax = axes[0]
     ax.bar(x, c_mae, color=GREEN, edgecolor="black", linewidth=0.5, width=0.58)

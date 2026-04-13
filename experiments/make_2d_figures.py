@@ -49,7 +49,7 @@ def fig_mae_bars():
     h_means = [agg[v]["h_mean"] for v in variants]
     h_stds = [agg[v]["h_std"] for v in variants]
 
-    fig, axes = plt.subplots(1, 2, figsize=(7.8, 3.4))
+    fig, axes = plt.subplots(1, 2, figsize=(6.5, 3.0))
 
     x = np.arange(len(variants))
     colors = [BLUE, ORANGE, GREEN]
