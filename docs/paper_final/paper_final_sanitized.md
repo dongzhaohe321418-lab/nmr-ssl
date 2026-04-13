@@ -729,10 +729,10 @@ conformal calibration in Section 3.10 is computed by
 
 # Author contributions (CRediT)
 
-Conceptualization, methodology, software, validation, formal analysis,
-investigation, data curation, writing --- original draft, writing ---
-review and editing, visualization, supervision, and project
-administration: the author. No external funding was received.
+**Z.D.**: conceptualization, methodology, software, validation, formal
+analysis, investigation, data curation, writing --- original draft,
+writing --- review and editing, visualization, supervision, and project
+administration. No external funding was received.
 
 # Competing interests
 
@@ -740,13 +740,16 @@ The author declares no competing interests.
 
 # Acknowledgements
 
-The author thanks the maintainers of NMRShiftDB2 for making the
-underlying spectral data freely available under CC-BY-SA. The code,
-figures, and manuscript draft were developed with AI assistance
-(Anthropic Claude Opus 4.6) under human direction; all methodological
-choices, numerical results, and final claims were verified by the
-author, and every empirical number reported in this paper is
-reproducible from the public code repository.
+I thank the maintainers of NMRShiftDB2 (Kuhn & Schl\\\"{o}rer$^{9}$) for
+making the underlying spectral data freely available under CC-BY-SA.
+All code, figures, and manuscript drafts were developed with AI
+assistance (Anthropic Claude Opus 4.6) under my direction; I verified
+every methodological choice, numerical result, and final claim, and
+every empirical number reported in this paper is reproducible from
+the public code repository at
+`https://github.com/dongzhaohe321418-lab/nmr-ssl`. I am grateful to the
+Yusuf Hamied Department of Chemistry for supporting independent
+open-source work in chemoinformatics.
 
 # References
 
@@ -755,9 +758,10 @@ reproducible from the public code repository.
    shifts (NMRNet). *Nature Computational Science* (2025). DOI
    `10.1038/s43588-025-00783-z`, arXiv `2408.15681` (2024).
 
-2. **Dong, E.** A sort-match theorem for unassigned-set regression, with
-   application to 1-D NMR chemical-shift prediction. Prior work (Paper
-   1), in `docs/preprint_v1_filled.md` of the companion repository.
+2. **Dong, Z.** A sort-match theorem for unassigned-set regression, with
+   application to 1-D NMR chemical-shift prediction. Prior work (Paper 1),
+   preprint in `docs/preprint_v1_filled.md` of the companion code
+   repository; `https://github.com/dongzhaohe321418-lab/nmr-ssl`.
 
 3. **Bonneel, N., Rabin, J., Peyr\'{e}, G., Pfister, H.** Sliced and Radon
    Wasserstein barycenters of measures. *J. Math. Imaging Vis.* **51**,
