@@ -1,5 +1,7 @@
 
+\usepackage{fontspec}
 \usepackage{hyperref}
+\usepackage{url}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{booktabs}
 \usepackage{float}
@@ -62,11 +64,18 @@
     linkcolor=blue!55!black,
     urlcolor=blue!55!black,
     citecolor=blue!55!black,
+    breaklinks=true,
     pdftitle={Learning 1H and 13C NMR chemical shifts jointly from unassigned 2-D HSQC peak sets},
     pdfauthor={Zhaohe Dong (Yusuf Hamied Department of Chemistry, University of Cambridge)},
     pdfsubject={Semi-supervised NMR chemical shift prediction with sliced-Wasserstein sort-match loss},
     pdfkeywords={NMR, HSQC, semi-supervised learning, sliced Wasserstein, conformal prediction, dereplication}
 }
+
+% --- allow URLs to break at any character (for long github urls) -------
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\makeatother
+\urlstyle{same}
 
 % --- title block --------------------------------------------------------
 \makeatletter

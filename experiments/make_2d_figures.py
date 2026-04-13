@@ -43,39 +43,40 @@ def fig_mae_bars():
         summary = json.load(f)
     agg = summary["aggregate"]
     variants = ["supervised_1d", "sort_match_ssl_1d", "sort_match_ssl_2d"]
-    labels = ["Supervised\n(13C only)", "1-D SSL\n(sort-match 1D)", "2-D SSL\n(sliced, ours)"]
+    labels = ["Supervised\n$^{13}$C only", "1-D SSL\nsort-match", "2-D SSL\nsliced (ours)"]
     c_means = [agg[v]["c_mean"] for v in variants]
     c_stds = [agg[v]["c_std"] for v in variants]
     h_means = [agg[v]["h_mean"] for v in variants]
     h_stds = [agg[v]["h_std"] for v in variants]
 
-    fig, axes = plt.subplots(1, 2, figsize=(7.0, 3.0))
+    fig, axes = plt.subplots(1, 2, figsize=(7.8, 3.4))
 
     x = np.arange(len(variants))
     colors = [BLUE, ORANGE, GREEN]
 
     ax = axes[0]
     bars = ax.bar(x, c_means, yerr=c_stds, color=colors, capsize=4,
-                  edgecolor="black", linewidth=0.6)
+                  edgecolor="black", linewidth=0.6, width=0.6)
     ax.set_xticks(x)
-    ax.set_xticklabels(labels)
+    ax.set_xticklabels(labels, fontsize=9)
     ax.set_ylabel("$^{13}$C test MAE (ppm)")
     ax.set_title("(a) $^{13}$C test error")
-    ax.set_ylim(0, max(c_means) * 1.25)
+    ax.set_ylim(0, max(c_means) * 1.28)
     for i, (m, s) in enumerate(zip(c_means, c_stds)):
         ax.text(i, m + s + 0.15, f"{m:.2f}", ha="center", va="bottom", fontsize=8)
 
     ax = axes[1]
     bars = ax.bar(x, h_means, yerr=h_stds, color=colors, capsize=4,
-                  edgecolor="black", linewidth=0.6)
+                  edgecolor="black", linewidth=0.6, width=0.6)
     ax.set_xticks(x)
-    ax.set_xticklabels(labels)
+    ax.set_xticklabels(labels, fontsize=9)
     ax.set_ylabel("$^{1}$H test MAE (ppm)")
     ax.set_title("(b) $^{1}$H test error")
-    ax.set_ylim(0, max(h_means) * 1.25)
+    ax.set_ylim(0, max(h_means) * 1.28)
     for i, (m, s) in enumerate(zip(h_means, h_stds)):
         ax.text(i, m + s + 0.07, f"{m:.2f}", ha="center", va="bottom", fontsize=8)
 
+    fig.subplots_adjust(bottom=0.22, wspace=0.3)
     fig.tight_layout()
     out = OUT / "fig_mae_bars.png"
     fig.savefig(out, bbox_inches="tight")

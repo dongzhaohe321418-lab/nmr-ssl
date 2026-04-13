@@ -78,39 +78,30 @@ def fig_noise_sweep():
     with (ROOT / "experiments" / "results_2d" / "reviewer_experiments.json").open() as f:
         d = json.load(f)
     order = ["clean", "low", "medium", "high"]
-    labels = [
-        "clean\n(0, 0)",
-        "low\n(0.03, 0.5)",
-        "medium\n(0.1, 2.0)",
-        "high\n(0.2, 4.0)",
-    ]
+    labels = ["clean", "low", "medium", "high"]
     c_mae = [d["noise_sweep"][k]["c_mae"] for k in order]
     h_mae = [d["noise_sweep"][k]["h_mae"] for k in order]
 
     x = np.arange(len(order))
-    fig, axes = plt.subplots(1, 2, figsize=(7.0, 3.2))
+    fig, axes = plt.subplots(1, 2, figsize=(7.4, 3.3))
 
     ax = axes[0]
-    ax.bar(x, c_mae, color=GREEN, edgecolor="black", linewidth=0.5, width=0.55)
-    ax.set_xticks(x); ax.set_xticklabels(labels)
+    ax.bar(x, c_mae, color=GREEN, edgecolor="black", linewidth=0.5, width=0.58)
+    ax.set_xticks(x); ax.set_xticklabels(labels, fontsize=9)
     ax.set_ylabel("$^{13}$C test MAE (ppm)")
     ax.set_title("(a) $^{13}$C robustness to HSQC noise")
     for i, v in enumerate(c_mae):
         ax.text(i, v + 0.08, f"{v:.2f}", ha="center", va="bottom", fontsize=8)
-    ax.set_ylim(0, max(c_mae) * 1.2)
+    ax.set_ylim(0, max(c_mae) * 1.22)
 
     ax = axes[1]
-    ax.bar(x, h_mae, color=ORANGE, edgecolor="black", linewidth=0.5, width=0.55)
-    ax.set_xticks(x); ax.set_xticklabels(labels)
+    ax.bar(x, h_mae, color=ORANGE, edgecolor="black", linewidth=0.5, width=0.58)
+    ax.set_xticks(x); ax.set_xticklabels(labels, fontsize=9)
     ax.set_ylabel("$^{1}$H test MAE (ppm)")
     ax.set_title("(b) $^{1}$H robustness to HSQC noise")
     for i, v in enumerate(h_mae):
         ax.text(i, v + 0.02, f"{v:.2f}", ha="center", va="bottom", fontsize=8)
-    ax.set_ylim(0, max(h_mae) * 1.25)
-
-    fig.text(0.5, -0.02,
-             "Noise levels = ($\\sigma_{H}$ ppm, $\\sigma_{C}$ ppm) injected into HSQC training targets",
-             ha="center", fontsize=8, style="italic")
+    ax.set_ylim(0, max(h_mae) * 1.28)
 
     fig.tight_layout()
     for ext in ("png", "pdf"):

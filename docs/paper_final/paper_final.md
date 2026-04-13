@@ -781,10 +781,11 @@ open-source work in chemoinformatics.
    shifts (NMRNet). *Nature Computational Science* (2025). DOI
    `10.1038/s43588-025-00783-z`, arXiv `2408.15681` (2024).
 
-2. **Dong, Z.** A sort-match theorem for unassigned-set regression, with
-   application to 1-D NMR chemical-shift prediction. Prior work (Paper 1),
-   preprint in `docs/preprint_v1_filled.md` of the companion code
-   repository; `https://github.com/dongzhaohe321418-lab/nmr-ssl`.
+2. **Dong, Z.** A sort-match theorem for unassigned-set regression with
+   application to one-dimensional NMR chemical-shift prediction. Prior
+   work (Paper 1), companion preprint, 2026. Source at
+   `docs/preprint_v1_filled.md` of the public code repository (see Code
+   availability section).
 
 3. **Bonneel, N., Rabin, J., Peyré, G., Pfister, H.** Sliced and Radon
    Wasserstein barycenters of measures. *J. Math. Imaging Vis.* **51**,

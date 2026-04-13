@@ -136,7 +136,7 @@ $\hat{\mathbf{P}}(M,\theta) =
 The goal is to minimize a permutation-invariant loss between
 $\hat{\mathbf{P}}$ and $\mathbf{P}^{\star}$. In one dimension this is
 achieved exactly by sorting both sets and taking a per-element $\ell^2$
-distance --- the Hardy--Littlewood--P\'{o}lya rearrangement inequality, which our
+distance --- the Hardy--Littlewood--Pólya rearrangement inequality, which our
 prior work formalizes as a training-time theorem.$^{2}$ In two dimensions
 the exact solution is the Hungarian optimal bipartite matching, which
 is $O(n^3)$ and not easily batched on GPU.
@@ -740,7 +740,7 @@ The author declares no competing interests.
 
 # Acknowledgements
 
-I thank the maintainers of NMRShiftDB2 (Kuhn & Schl\\\"{o}rer$^{9}$) for
+I thank the maintainers of NMRShiftDB2 (Kuhn & Schlörer$^{9}$) for
 making the underlying spectral data freely available under CC-BY-SA.
 All code, figures, and manuscript drafts were developed with AI
 assistance (Anthropic Claude Opus 4.6) under my direction; I verified
@@ -758,12 +758,13 @@ open-source work in chemoinformatics.
    shifts (NMRNet). *Nature Computational Science* (2025). DOI
    `10.1038/s43588-025-00783-z`, arXiv `2408.15681` (2024).
 
-2. **Dong, Z.** A sort-match theorem for unassigned-set regression, with
-   application to 1-D NMR chemical-shift prediction. Prior work (Paper 1),
-   preprint in `docs/preprint_v1_filled.md` of the companion code
-   repository; `https://github.com/dongzhaohe321418-lab/nmr-ssl`.
+2. **Dong, Z.** A sort-match theorem for unassigned-set regression with
+   application to one-dimensional NMR chemical-shift prediction. Prior
+   work (Paper 1), companion preprint, 2026. Source at
+   `docs/preprint_v1_filled.md` of the public code repository (see Code
+   availability section).
 
-3. **Bonneel, N., Rabin, J., Peyr\'{e}, G., Pfister, H.** Sliced and Radon
+3. **Bonneel, N., Rabin, J., Peyré, G., Pfister, H.** Sliced and Radon
    Wasserstein barycenters of measures. *J. Math. Imaging Vis.* **51**,
    22--45 (2015).
 
@@ -774,7 +775,7 @@ open-source work in chemoinformatics.
    Distribution-free predictive inference for regression.
    *J. Am. Stat. Assoc.* **113**, 1094--1111 (2018).
 
-6. **Hardy, G. H., Littlewood, J. E., P\'{o}lya, G.** *Inequalities*.
+6. **Hardy, G. H., Littlewood, J. E., Pólya, G.** *Inequalities*.
    Cambridge University Press (1934). Used for the rearrangement
    inequality that underpins 1-D sort-match.
 
@@ -785,7 +786,7 @@ open-source work in chemoinformatics.
 8. **Landrum, G.** RDKit: Open-source cheminformatics.
    `https://www.rdkit.org` (2024).
 
-9. **Kuhn, S., Schl\\\"{o}rer, N. E.** Facilitating quality control for
+9. **Kuhn, S., Schlörer, N. E.** Facilitating quality control for
    spectra assignments of small organic molecules: nmrshiftdb2 --- a
    free in-house NMR database with integrated LIMS for academic
    service laboratories. *Magn. Reson. Chem.* **53**, 582--589 (2015).

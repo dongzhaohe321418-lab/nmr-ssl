@@ -44,18 +44,18 @@ def fig_new_headline():
         return
 
     labels = [
-        "Supervised-1D\n(¹³C only)",
-        "1-D SSL\n(Paper 1)",
-        "2-D SSL λ=0.5\n(v3, K=8)",
-        "2-D SSL λ=0.5\n(v3, K=16)",
-        "2-D SSL λ=2.0\n(v4 headline)",
+        "Supervised\n1-D",
+        "Sort-match\nSSL 1-D",
+        "2-D SSL\nλ=0.5, K=8",
+        "2-D SSL\nλ=0.5, K=16",
+        "2-D SSL\nλ=2.0, K=16",
     ]
     c_mean = [5.600, 4.562, 4.909, 4.869, v4_c]
     c_std = [0.343, 0.314, 0.209, 0.066, v4_c_std]
     h_mean = [2.473, 2.607, 0.491, 0.455, v4_h]
     h_std = [0.376, 0.322, 0.066, 0.144, v4_h_std]
 
-    fig, axes = plt.subplots(1, 2, figsize=(7.4, 3.2))
+    fig, axes = plt.subplots(1, 2, figsize=(9.0, 3.6))
     x = np.arange(len(labels))
     colors = [GRAY, BLUE, ORANGE, PURPLE, GREEN]
 
@@ -66,7 +66,7 @@ def fig_new_headline():
     ax.set_xticks(x); ax.set_xticklabels(labels, fontsize=8)
     ax.set_ylabel("$^{13}$C test MAE (ppm)")
     ax.set_title("(a) $^{13}$C — v4 matches 1-D SSL")
-    ax.set_ylim(0, max(c_mean) * 1.2)
+    ax.set_ylim(0, max(c_mean) * 1.22)
 
     ax = axes[1]
     ax.bar(x, h_mean, yerr=h_std, color=colors, edgecolor="black", linewidth=0.5, capsize=3)
@@ -75,8 +75,9 @@ def fig_new_headline():
     ax.set_xticks(x); ax.set_xticklabels(labels, fontsize=8)
     ax.set_ylabel("$^{1}$H test MAE (ppm)")
     ax.set_title("(b) $^{1}$H — v4 reaches 0.35 ppm")
-    ax.set_ylim(0, max(h_mean) * 1.2)
+    ax.set_ylim(0, max(h_mean) * 1.22)
 
+    fig.subplots_adjust(bottom=0.22, wspace=0.28)
     fig.tight_layout()
     for ext in ("png", "pdf"):
         fig.savefig(OUT / f"fig_v4_headline.{ext}", bbox_inches="tight")

@@ -35,6 +35,7 @@ HEADER = OUTDIR / "preamble.tex"
 
 
 UNICODE_REPLACEMENTS = [
+    # Math-mode replacements for symbols pandoc's math passthrough misses
     ("¹³C", r"$^{13}$C"),
     ("¹H", r"$^{1}$H"),
     ("¹",  r"$^{1}$"),
@@ -54,15 +55,10 @@ UNICODE_REPLACEMENTS = [
     ("∑",  r"$\sum$"),
     ("≈",  r"$\approx$"),
     ("½",  r"$\tfrac{1}{2}$"),
-    ("Å",  r"\AA{}"),
-    ("·",  r"\textperiodcentered{}"),
-    ("ó",  r"\'{o}"),
-    ("é",  r"\'{e}"),
-    ("ë",  r"\\\"{e}"),
-    ("ö",  r"\\\"{o}"),
-    ("ü",  r"\\\"{u}"),
-    ("ñ",  r"\~{n}"),
-    ("§",  r"\S{}"),
+    # NOTE: Accented Latin characters (é, ö, ü, etc.) are intentionally NOT
+    # replaced because we compile with xelatex+fontspec which handles them
+    # natively. Replacing them with \'{e}-style latex-math macros would break
+    # under xelatex.
     ("–",  r"--"),
     ("—",  r"---"),
     ("…",  r"\ldots{}"),
@@ -74,7 +70,9 @@ UNICODE_REPLACEMENTS = [
 
 
 PREAMBLE = r"""
+\usepackage{fontspec}
 \usepackage{hyperref}
+\usepackage{url}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{booktabs}
 \usepackage{float}
@@ -137,11 +135,18 @@ PREAMBLE = r"""
     linkcolor=blue!55!black,
     urlcolor=blue!55!black,
     citecolor=blue!55!black,
+    breaklinks=true,
     pdftitle={Learning 1H and 13C NMR chemical shifts jointly from unassigned 2-D HSQC peak sets},
     pdfauthor={Zhaohe Dong (Yusuf Hamied Department of Chemistry, University of Cambridge)},
     pdfsubject={Semi-supervised NMR chemical shift prediction with sliced-Wasserstein sort-match loss},
     pdfkeywords={NMR, HSQC, semi-supervised learning, sliced Wasserstein, conformal prediction, dereplication}
 }
+
+% --- allow URLs to break at any character (for long github urls) -------
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\makeatother
+\urlstyle{same}
 
 % --- title block --------------------------------------------------------
 \makeatletter
