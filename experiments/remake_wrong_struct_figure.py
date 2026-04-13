@@ -37,9 +37,9 @@ def main():
     rand_wrong = rand["wrong_structure"]["wrong"]
 
     cats = ["$^{1}$H pass", "$^{13}$C pass", "Joint pass"]
-    fig, axes = plt.subplots(1, 3, figsize=(10.5, 3.3))
+    fig, axes = plt.subplots(1, 3, figsize=(11.5, 3.6))
     x = np.arange(len(cats))
-    w = 0.35
+    w = 0.36
 
     # Panel A: constitutional isomer (HEADLINE)
     ax = axes[0]
@@ -51,11 +51,11 @@ def main():
         ax.text(b.get_x() + b.get_width() / 2, v + 1.2, f"{v:.0f}%", ha="center", va="bottom", fontsize=8)
     for b, v in zip(b2, iso_wrong_rates):
         ax.text(b.get_x() + b.get_width() / 2, v + 1.2, f"{v:.0f}%", ha="center", va="bottom", fontsize=8)
-    ax.set_xticks(x); ax.set_xticklabels(cats, fontsize=8)
+    ax.set_xticks(x); ax.set_xticklabels(cats, fontsize=9)
     ax.set_ylabel("Pass rate (%)")
     ax.set_title("(a) Constitutional isomer (HEADLINE, n=74)")
-    ax.set_ylim(0, 105)
-    ax.legend(frameon=False, loc="upper right", fontsize=8)
+    ax.set_ylim(0, 115)
+    ax.legend(frameon=False, loc="upper left", fontsize=8)
 
     # Panel B: scaffold neighbor
     ax = axes[1]
@@ -67,11 +67,11 @@ def main():
         ax.text(b.get_x() + b.get_width() / 2, v + 1.2, f"{v:.0f}%", ha="center", va="bottom", fontsize=8)
     for b, v in zip(b2, sc_wrong_rates):
         ax.text(b.get_x() + b.get_width() / 2, v + 1.2, f"{v:.0f}%", ha="center", va="bottom", fontsize=8)
-    ax.set_xticks(x); ax.set_xticklabels(cats, fontsize=8)
+    ax.set_xticks(x); ax.set_xticklabels(cats, fontsize=9)
     ax.set_ylabel("Pass rate (%)")
     ax.set_title("(b) Scaffold neighbor (medium, n=93)")
-    ax.set_ylim(0, 105)
-    ax.legend(frameon=False, loc="upper right", fontsize=8)
+    ax.set_ylim(0, 115)
+    ax.legend(frameon=False, loc="upper left", fontsize=8)
 
     # Panel C: random pair
     ax = axes[2]
@@ -83,12 +83,13 @@ def main():
         ax.text(b.get_x() + b.get_width() / 2, v + 1.2, f"{v:.0f}%", ha="center", va="bottom", fontsize=8)
     for b, v in zip(b2, rand_wrong_rates):
         ax.text(b.get_x() + b.get_width() / 2, v + 1.2, f"{v:.0f}%", ha="center", va="bottom", fontsize=8)
-    ax.set_xticks(x); ax.set_xticklabels(cats, fontsize=8)
+    ax.set_xticks(x); ax.set_xticklabels(cats, fontsize=9)
     ax.set_ylabel("Pass rate (%)")
     ax.set_title("(c) Random pair (easy lower bound, n=155)")
-    ax.set_ylim(0, 105)
-    ax.legend(frameon=False, loc="upper right", fontsize=8)
+    ax.set_ylim(0, 115)
+    ax.legend(frameon=False, loc="upper left", fontsize=8)
 
+    fig.subplots_adjust(wspace=0.35)
     fig.tight_layout()
     for ext in ("png", "pdf"):
         fig.savefig(OUT / f"fig_wrong_struct_v4.{ext}", bbox_inches="tight")

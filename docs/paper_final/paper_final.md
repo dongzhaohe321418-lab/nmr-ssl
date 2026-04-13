@@ -36,7 +36,7 @@ invariant, differentiable almost everywhere, and $O(Kn\log n)$ per molecule.
 
 On NMRShiftDB2, with $10\%$ of molecules providing atom-assigned $^{13}$C
 labels and the remaining $90\%$ providing only HSQC peak multisets, a
-four-layer graph isomorphism network reaches $4.54 \pm 0.11$ ppm
+four-layer graph isomorphism network reaches $4.53 \pm 0.11$ ppm
 $^{13}$C and $0.35 \pm 0.02$ ppm $^{1}$H test MAE simultaneously, without
 ever seeing a single atom-assigned $^{1}$H shift (3 seeds, 30 epochs). A
 causal audit that zeros out the $^{1}$H coordinate of every HSQC training
@@ -107,7 +107,7 @@ $O(Kn\log n)$ per molecule.
 **(ii)** Trained on NMRShiftDB2 with only $10\%$ of molecules providing
 atom-assigned $^{13}$C labels and the remainder providing only HSQC peak
 multisets, a four-layer graph isomorphism network achieves
-$4.54 \pm 0.11$ ppm $^{13}$C and $0.35 \pm 0.02$ ppm $^{1}$H test MAE
+$4.53 \pm 0.11$ ppm $^{13}$C and $0.35 \pm 0.02$ ppm $^{1}$H test MAE
 (three seeds, $K=16$, SSL weight $\lambda=2$, 30 epochs). Applied on top
 of full $^{13}$C supervision, the same loss delivers $3.23 \pm 0.10$ ppm
 $^{13}$C and $0.30 \pm 0.03$ ppm $^{1}$H. The $^{1}$H head is trained
@@ -122,13 +122,13 @@ gradient leakage from the $^{13}$C supervised loss through the shared
 encoder. The HSQC $^{1}$H coordinate itself is the causal training
 signal.
 
-**(iv)** We layer split-conformal calibration on top of the predictor.
-At a per-atom significance level $\alpha = 0.05$, empirical test-set
-coverage is $95.2\%$ on $^{13}$C and $96.7\%$ on $^{1}$H — hitting the
-marginal target. A Bonferroni correction over the per-molecule HSQC peak
-count $k$ delivers a formal molecule-level $1-\alpha_{\text{mol}}$
-coverage guarantee at the cost of substantially wider intervals; we
-discuss when each is the right choice.
+**(iv)** We layer split-conformal calibration$^{4,5}$ on top of the
+predictor. At a per-atom significance level $\alpha = 0.05$, empirical
+test-set coverage is $95.2\%$ on $^{13}$C and $96.7\%$ on $^{1}$H —
+hitting the marginal target. A Bonferroni correction over the
+per-molecule HSQC peak count $k$ delivers a formal molecule-level
+$1 - \alpha_{\text{mol}}$ coverage guarantee at the cost of
+substantially wider intervals; we discuss when each is the right choice.
 
 Section 2 states the sliced sort-match loss and its implementation.
 Section 3 reports results, including the causal audit, the combined
@@ -259,7 +259,7 @@ Section 5. The dual-head architecture has four GIN layers, hidden size
 Table 1 reports the three main training regimes side by side. The 2-D
 sort-match SSL at $\lambda = 2$, $K = 16$ is the paper's low-label
 headline; it **matches** the 1-D sort-match SSL baseline on $^{13}$C
-(4.54 vs 4.56 ppm), delivers sub-0.4 ppm $^{1}$H, and does so without any
+(4.53 vs 4.56 ppm), delivers sub-0.4 ppm $^{1}$H, and does so without any
 atom-assigned $^{1}$H labels. The combined full-$^{13}$C + SSL variant
 (row 4) is the general-purpose recipe: it improves $^{13}$C by a further
 $1.3$ ppm and drops $^{1}$H below $0.31$ ppm.
@@ -272,7 +272,7 @@ gradient clipping L2 $=$ 5, and best-val-$^{13}$C-MAE early stopping.
 |---|---|---|
 | Supervised-1D ($10\%$ labelled, $^{13}$C only) | $5.60 \pm 0.34$ | $2.47 \pm 0.38$ (untrained) |
 | 1-D sort-match SSL ($10\%$ labelled, prior work)$^{2}$ | $4.56 \pm 0.31$ | $2.61 \pm 0.32$ (untrained) |
-| **2-D SSL** ($10\%$ labelled, $\lambda=2$, $K=16$) | $\mathbf{4.54 \pm 0.11}$ | $\mathbf{0.35 \pm 0.02}$ |
+| **2-D SSL** ($10\%$ labelled, $\lambda=2$, $K=16$) | $\mathbf{4.53 \pm 0.11}$ | $\mathbf{0.35 \pm 0.02}$ |
 | **2-D SSL + full $^{13}$C** (combined) | $\mathbf{3.23 \pm 0.10}$ | $\mathbf{0.30 \pm 0.03}$ |
 
 For context, the published state of the art NMRNet achieves $1.10$ ppm
@@ -307,7 +307,7 @@ $^{13}$C is essentially unchanged.
 
 | Configuration | $^{13}$C MAE (ppm) | $^{1}$H MAE (ppm) |
 |---|---|---|
-| 2-D SSL baseline ($\lambda=2$, $K=16$) | $4.54 \pm 0.11$ | $0.35 \pm 0.02$ |
+| 2-D SSL baseline ($\lambda=2$, $K=16$) | $4.53 \pm 0.11$ | $0.35 \pm 0.02$ |
 | 2-D SSL with HSQC $^{1}$H coordinate zeroed | $5.00 \pm 0.46$ | $4.69 \pm 0.10$ |
 
 ![**Figure 2.** Causal audit. (a) $^{13}$C test MAE is essentially
@@ -415,7 +415,7 @@ reports the result.
 
 | Split | $^{13}$C MAE (ppm) | $^{1}$H MAE (ppm) | $n_{\text{test}}$ |
 |---|---|---|---|
-| Random 80/10/10 (main) | $4.54 \pm 0.11$ | $0.35 \pm 0.02$ | 155 |
+| Random 80/10/10 (main) | $4.53 \pm 0.11$ | $0.35 \pm 0.02$ | 155 |
 | Scaffold-OOD (Bemis–Murcko) | $6.06 \pm 0.01$ | $0.40 \pm 0.003$ | 225 |
 
 $^{13}$C degrades by $1.5$ ppm from random to scaffold-OOD, while
@@ -697,13 +697,16 @@ headline run.
 
 \subsection*{5.5 Split-conformal calibration}
 
-After training the 2-D SSL model, we collect per-atom absolute
-residuals $|\hat{\delta} - \delta^{\star}|$ on the held-out validation
-split (150 molecules, approximately 1,800 $^{13}$C atoms and 1,200
-$^{1}$H atoms). We take the finite-sample-corrected
-$(1-\alpha)$ empirical quantile at $\alpha = 0.05$, giving
-$q_{C} = 13.4$ ppm and $q_{H} = 1.03$ ppm. Empirical test-set
-coverage at this level is $95.2\%$ on $^{13}$C and $96.7\%$ on $^{1}$H.
+We use the split-conformal prediction framework of Vovk, Gammerman and
+Shafer$^{4}$, specialized to regression by Lei, G'Sell, Rinaldo,
+Tibshirani and Wasserman$^{5}$. After training the 2-D SSL model, we
+collect per-atom absolute residuals
+$|\hat{\delta} - \delta^{\star}|$ on the held-out validation split
+(150 molecules, approximately 1,800 $^{13}$C atoms and 1,200 $^{1}$H
+atoms). We take the finite-sample-corrected $(1-\alpha)$ empirical
+quantile at $\alpha = 0.05$, giving $q_{C} = 13.4$ ppm and
+$q_{H} = 1.03$ ppm. Empirical test-set coverage at this level is
+$95.2\%$ on $^{13}$C and $96.7\%$ on $^{1}$H.
 For the molecule-level Bonferroni correction we precompute a lookup
 table of per-$k$ quantiles at $\alpha_{\text{atom}} =
 \alpha_{\text{mol}}/(2k)$ and apply the molecule-appropriate quantile
@@ -862,7 +865,7 @@ $\lambda_{\text{mul}} = 1$:
 
 | Variant | $^{13}$C (ppm) | $^{1}$H (ppm) |
 |---|---|---|
-| 2-D SSL headline ($\lambda=2$, $K=16$) | $4.54 \pm 0.11$ | $0.35 \pm 0.02$ |
+| 2-D SSL headline ($\lambda=2$, $K=16$) | $4.53 \pm 0.11$ | $0.35 \pm 0.02$ |
 | 2-D SSL + multiplicity-hist loss ($\lambda_{\text{mul}}=1$) | $4.66 \pm 0.05$ | $0.39 \pm 0.04$ |
 
 We include this as an honest negative result. The histogram loss only
@@ -884,7 +887,7 @@ $^{1}$H head and the shared encoder.
 
 | Variant | $^{13}$C (ppm) | $^{1}$H (ppm) |
 |---|---|---|
-| 2-D SSL headline ($K=16$, $\lambda=2$) | $4.54 \pm 0.11$ | $0.35 \pm 0.02$ |
+| 2-D SSL headline ($K=16$, $\lambda=2$) | $4.53 \pm 0.11$ | $0.35 \pm 0.02$ |
 | 2-D SSL with stop-grad on $^{13}$C through SSL | $5.62 \pm 0.20$ | $0.76 \pm 0.38$ |
 
 The stop-gradient variant is decisively worse on both nuclei, which

@@ -38,7 +38,7 @@ def main():
 
     pct = [f * 100 for f in fracs]
 
-    fig, axes = plt.subplots(1, 2, figsize=(7.0, 3.0))
+    fig, axes = plt.subplots(1, 2, figsize=(8.2, 3.4))
 
     ax = axes[0]
     ax.plot(pct, sup_c, "s--", color=BLUE, linewidth=1.5, markersize=7, label="Supervised-1D")
@@ -50,9 +50,12 @@ def main():
     ax.set_title("(a) $^{13}$C data efficiency")
     ax.grid(alpha=0.2)
     ax.legend(frameon=False, loc="upper right")
+    # Annotate #labeled molecules BELOW each 2-D SSL point to avoid colliding
+    # with the supervised-1D curve (which rises toward 18 ppm at 1%).
     for x, y, n in zip(pct, ssl_c, n_labs):
-        ax.annotate(f"n={n}", xy=(x, y), xytext=(0, 8), textcoords="offset points",
-                    ha="center", fontsize=8, color=GREEN)
+        ax.annotate(f"n={n}", xy=(x, y), xytext=(0, -14), textcoords="offset points",
+                    ha="center", fontsize=7, color=GREEN,
+                    bbox=dict(boxstyle="round,pad=0.1", fc="white", ec="none", alpha=0.7))
 
     ax = axes[1]
     ax.plot(pct, sup_h, "s--", color=BLUE, linewidth=1.5, markersize=7, label="Supervised-1D (random)")
@@ -63,7 +66,7 @@ def main():
     ax.set_ylabel("$^{1}$H test MAE (ppm)")
     ax.set_title("(b) $^{1}$H data efficiency")
     ax.grid(alpha=0.2)
-    ax.legend(frameon=False, loc="upper right")
+    ax.legend(frameon=False, loc="center right")
 
     fig.tight_layout()
     for ext in ("png", "pdf"):
