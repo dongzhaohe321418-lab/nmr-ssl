@@ -40,6 +40,16 @@ team_dashboard/server.log
 # but drop the preview directory (~7 MB of rasterized page images)
 docs/preprint_preview/
 
+# Temporary preview PNGs produced by `pdftoppm` during publication audits
+docs/paper_final/p-*.png
+docs/paper_final/p7*.png
+docs/paper_final/check-*.png
+docs/paper_final/trans-*.png
+docs/paper_final/hl-*.png
+docs/paper_final/ref-*.png
+docs/paper_final/refonly-*.png
+docs/paper_final/title-*.png
+
 # Virtual envs
 venv/
 env/
