@@ -41,31 +41,25 @@ def main():
     fig, axes = plt.subplots(1, 2, figsize=(6.5, 3.0))
 
     ax = axes[0]
-    ax.plot(pct, sup_c, "s--", color=BLUE, linewidth=1.5, markersize=7, label="Supervised-1D")
-    ax.plot(pct, ssl_c, "o-",  color=GREEN, linewidth=1.8, markersize=8, label="2-D SSL (ours)")
+    ax.plot(pct, sup_c, "s--", color=BLUE, linewidth=1.8, markersize=8, label="Supervised-1D")
+    ax.plot(pct, ssl_c, "o-",  color=GREEN, linewidth=2.0, markersize=9, label="2-D SSL (ours)")
     ax.set_xscale("log")
     ax.set_xticks(pct); ax.set_xticklabels([f"{p:g}%" for p in pct])
     ax.set_xlabel("Labeled-$^{13}$C fraction")
     ax.set_ylabel("$^{13}$C test MAE (ppm)")
     ax.set_title("(a) $^{13}$C data efficiency")
-    ax.grid(alpha=0.2)
+    ax.grid(alpha=0.25)
     ax.legend(frameon=False, loc="upper right")
-    # Annotate #labeled molecules to the UPPER-RIGHT of each 2-D SSL point,
-    # clear of both the x-axis tick labels and the supervised-1D dashed curve.
-    for x, y, n in zip(pct, ssl_c, n_labs):
-        ax.annotate(f"n={n}", xy=(x, y), xytext=(6, 6), textcoords="offset points",
-                    ha="left", va="bottom", fontsize=7, color=GREEN,
-                    bbox=dict(boxstyle="round,pad=0.15", fc="white", ec="none", alpha=0.85))
 
     ax = axes[1]
-    ax.plot(pct, sup_h, "s--", color=BLUE, linewidth=1.5, markersize=7, label="Supervised-1D (random)")
-    ax.plot(pct, ssl_h, "o-",  color=ORANGE, linewidth=1.8, markersize=8, label="2-D SSL (ours)")
+    ax.plot(pct, sup_h, "s--", color=BLUE, linewidth=1.8, markersize=8, label="Supervised-1D (random)")
+    ax.plot(pct, ssl_h, "o-",  color=ORANGE, linewidth=2.0, markersize=9, label="2-D SSL (ours)")
     ax.set_xscale("log")
     ax.set_xticks(pct); ax.set_xticklabels([f"{p:g}%" for p in pct])
     ax.set_xlabel("Labeled-$^{13}$C fraction")
     ax.set_ylabel("$^{1}$H test MAE (ppm)")
     ax.set_title("(b) $^{1}$H data efficiency")
-    ax.grid(alpha=0.2)
+    ax.grid(alpha=0.25)
     ax.legend(frameon=False, loc="center right")
 
     fig.tight_layout()
