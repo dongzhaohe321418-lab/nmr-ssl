@@ -1,0 +1,81 @@
+{
+  "seed": 0,
+  "epochs": 20,
+  "results": {
+    "0.01": {
+      "n_labeled": 12,
+      "variants": {
+        "supervised_1d": {
+          "test_c_mae": 18.452880723211795,
+          "test_h_mae": 2.8662925926414697,
+          "elapsed": 3.1167118549346924
+        },
+        "sort_match_ssl_2d": {
+          "test_c_mae": 6.017421264988846,
+          "test_h_mae": 0.44094488427445694,
+          "elapsed": 28.916939973831177
+        }
+      }
+    },
+    "0.05": {
+      "n_labeled": 61,
+      "variants": {
+        "supervised_1d": {
+          "test_c_mae": 13.054932866093838,
+          "test_h_mae": 3.3121701833364128,
+          "elapsed": 3.173482894897461
+        },
+        "sort_match_ssl_2d": {
+          "test_c_mae": 5.86216743499024,
+          "test_h_mae": 1.0125242697226036,
+          "elapsed": 32.282509088516235
+        }
+      }
+    },
+    "0.1": {
+      "n_labeled": 123,
+      "variants": {
+        "supervised_1d": {
+          "test_c_mae": 6.644984128816927,
+          "test_h_mae": 3.0461451556231522,
+          "elapsed": 4.424226999282837
+        },
+        "sort_match_ssl_2d": {
+          "test_c_mae": 5.485420869570901,
+          "test_h_mae": 0.4377412087208516,
+          "elapsed": 37.8181049823761
+        }
+      }
+    },
+    "0.2": {
+      "n_labeled": 246,
+      "variants": {
+        "supervised_1d": {
+          "test_c_mae": 5.630849843575711,
+          "test_h_mae": 2.745111001504434,
+          "elapsed": 6.799069404602051
+        },
+        "sort_match_ssl_2d": {
+          "test_c_mae": 5.048347264644625,
+          "test_h_mae": 0.4055620592993659,
+          "elapsed": 45.29191613197327
+        }
+      }
+    },
+    "0.5": {
+      "n_labeled": 616,
+      "variants": {
+        "supervised_1d": {
+          "test_c_mae": 4.9024512508496585,
+          "test_h_mae": 3.031205563931852,
+          "elapsed": 13.659563064575195
+        },
+        "sort_match_ssl_2d": {
+          "test_c_mae": 4.940362150550753,
+          "test_h_mae": 0.41886312897140915,
+          "elapsed": 83.98834466934204
+        }
+      }
+    }
+  }
+}

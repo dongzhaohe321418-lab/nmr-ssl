@@ -1,0 +1,57 @@
+# Large data files — NMRShiftDB2 SDF should be downloaded, not committed
+data/*.sd
+data/*.sdf
+data/*.zip
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# macOS
+.DS_Store
+
+# Logs and temporary outputs
+experiments/*.log
+experiments/*.stderr
+experiments/*.tmp
+team_dashboard/server.log
+
+# LaTeX auxiliary outputs
+*.aux
+*.fdb_latexmk
+*.fls
+*.out
+*.synctex.gz
+*.toc
+*.log
+*.xdv
+*.bbl
+*.blg
+
+# Keep the built PDFs and the sanitized markdown for the v1 and v4 preprints,
+# but drop the preview directory (~7 MB of rasterized page images)
+docs/preprint_preview/
+
+# Virtual envs
+venv/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Generated JSONL sub-agent transcripts (if any land here)
+*.jsonl
+
+# Private session artifacts
+.claude/

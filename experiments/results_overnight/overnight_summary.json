@@ -1,0 +1,29 @@
+{
+  "args": {
+    "sdf": "/Users/ericdong/nmr-ssl/data/nmrshiftdb2withsignals.sd",
+    "max_records": 20000,
+    "out": "/Users/ericdong/nmr-ssl/experiments/results_overnight",
+    "stages": "ABCDE"
+  },
+  "config": {
+    "hidden": 192,
+    "n_layers": 4,
+    "epochs_main": 30,
+    "epochs_ablation": 20,
+    "max_records": 20000,
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "labeled_frac": 0.1
+  },
+  "n_clean_molecules": 17305,
+  "stages_run": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E"
+  ]
+}

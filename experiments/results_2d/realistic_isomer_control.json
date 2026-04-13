@@ -1,0 +1,28 @@
+{
+  "seed": 0,
+  "q_c": 14.581958770751953,
+  "q_h": 0.9776959419250488,
+  "best_val_c_mae": 4.941558079465606,
+  "constitutional_isomer": {
+    "label": "constitutional_isomer",
+    "own_n": 74,
+    "wrong_n": 161,
+    "own_h_rate": 0.8378378378378378,
+    "own_c_rate": 0.8783783783783784,
+    "own_both_rate": 0.7702702702702703,
+    "wrong_h_rate": 0.3105590062111801,
+    "wrong_c_rate": 0.2981366459627329,
+    "wrong_both_rate": 0.21739130434782608
+  },
+  "scaffold_neighbor": {
+    "label": "scaffold_neighbor",
+    "own_n": 93,
+    "wrong_n": 251,
+    "own_h_rate": 0.7849462365591398,
+    "own_c_rate": 0.7419354838709677,
+    "own_both_rate": 0.6236559139784946,
+    "wrong_h_rate": 0.09163346613545817,
+    "wrong_c_rate": 0.06772908366533864,
+    "wrong_both_rate": 0.05179282868525897
+  }
+}

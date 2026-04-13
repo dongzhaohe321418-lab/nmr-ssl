@@ -1,0 +1,42 @@
+{
+  "config": {
+    "variant": "naive_ssl",
+    "hidden": 64,
+    "n_layers": 3,
+    "dropout": 0.1,
+    "lr": 0.001,
+    "weight_decay": 1e-05,
+    "batch_size": 32,
+    "epochs": 3,
+    "ssl_weight": 0.5,
+    "labeled_frac": 0.1,
+    "seed": 0,
+    "device": "mps"
+  },
+  "best_val_mae": 84.5876263543869,
+  "test_mae": 79.78192403506559,
+  "history": [
+    {
+      "epoch": 0,
+      "val_mae": 89.4977413121036,
+      "sup_loss": 10967.176047585228,
+      "ssl_loss": 10601.698649088541,
+      "total_loss": 15354.093994140625
+    },
+    {
+      "epoch": 1,
+      "val_mae": 87.39659586416491,
+      "sup_loss": 11162.393821022728,
+      "ssl_loss": 10221.877115885416,
+      "total_loss": 15343.1328125
+    },
+    {
+      "epoch": 2,
+      "val_mae": 84.5876263543869,
+      "sup_loss": 11052.727254231771,
+      "ssl_loss": 9783.770914713541,
+      "total_loss": 15944.612548828125
+    }
+  ],
+  "elapsed_sec": 2.9373178482055664
+}

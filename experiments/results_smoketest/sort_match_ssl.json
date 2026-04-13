@@ -1,0 +1,42 @@
+{
+  "config": {
+    "variant": "sort_match_ssl",
+    "hidden": 64,
+    "n_layers": 3,
+    "dropout": 0.1,
+    "lr": 0.001,
+    "weight_decay": 1e-05,
+    "batch_size": 32,
+    "epochs": 3,
+    "ssl_weight": 0.5,
+    "labeled_frac": 0.1,
+    "seed": 0,
+    "device": "mps"
+  },
+  "best_val_mae": 84.60173179836153,
+  "test_mae": 79.79602358728557,
+  "history": [
+    {
+      "epoch": 0,
+      "val_mae": 89.50362133324525,
+      "sup_loss": 10967.96395596591,
+      "ssl_loss": 10696.436604817709,
+      "total_loss": 15402.185546875
+    },
+    {
+      "epoch": 1,
+      "val_mae": 87.4009439415962,
+      "sup_loss": 11163.289417613636,
+      "ssl_loss": 10301.89404296875,
+      "total_loss": 15383.962361653646
+    },
+    {
+      "epoch": 2,
+      "val_mae": 84.60173179836153,
+      "sup_loss": 11054.279663085938,
+      "ssl_loss": 9866.866617838541,
+      "total_loss": 15987.712890625
+    }
+  ],
+  "elapsed_sec": 2.2242350578308105
+}

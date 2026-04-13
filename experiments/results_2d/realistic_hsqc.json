@@ -1,0 +1,33 @@
+{
+  "seed": 0,
+  "results": {
+    "clean": {
+      "recipe": "clean",
+      "test_c_mae": 5.926890181207818,
+      "test_h_mae": 0.5148295247464393,
+      "best_val_c_mae": 5.6633648056266095,
+      "elapsed": 34.695611000061035
+    },
+    "realistic": {
+      "recipe": "realistic",
+      "test_c_mae": 5.816686503664581,
+      "test_h_mae": 0.5265716835542597,
+      "best_val_c_mae": 5.859800184803413,
+      "elapsed": 33.40292286872864
+    },
+    "merge": {
+      "recipe": "merge",
+      "test_c_mae": 6.3509202920679835,
+      "test_h_mae": 0.5809003384854479,
+      "best_val_c_mae": 6.045393106933314,
+      "elapsed": 31.14507508277893
+    },
+    "worst": {
+      "recipe": "worst",
+      "test_c_mae": 6.43043008295838,
+      "test_h_mae": 0.6488637691198926,
+      "best_val_c_mae": 6.23290205083715,
+      "elapsed": 30.18090009689331
+    }
+  }
+}

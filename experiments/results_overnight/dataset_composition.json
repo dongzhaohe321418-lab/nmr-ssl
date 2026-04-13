@@ -1,0 +1,125 @@
+{
+  "n_parsed": 20000,
+  "n_kept": 17305,
+  "retention_rate": 0.86525,
+  "mw_stats": {
+    "mean": 217.81099056347878,
+    "median": 186.20999999999995,
+    "p25": 137.18199999999996,
+    "p75": 268.31199999999995,
+    "max": 1114.0220000000006
+  },
+  "heavy_atoms_stats": {
+    "mean": 14.877549841086392,
+    "median": 12.0,
+    "max": 59
+  },
+  "lipinski_compliant_fraction": 0.9225079456804391,
+  "element_composition": {
+    "C": 197063,
+    "O": 40262,
+    "N": 12305,
+    "H": 5385,
+    "Cl": 2459,
+    "S": 2175,
+    "Br": 1467,
+    "F": 979,
+    "I": 267,
+    "Si": 210,
+    "P": 112,
+    "B": 64,
+    "Se": 62,
+    "Na": 10,
+    "Li": 8,
+    "Sn": 4,
+    "Al": 3,
+    "As": 2,
+    "Ge": 2,
+    "K": 1,
+    "Te": 1
+  },
+  "n_unique_scaffolds": 3580,
+  "scaffold_concentration_top20": 0.46593470095348166,
+  "top_20_scaffolds": [
+    {
+      "scaffold_smiles": "c1ccccc1",
+      "count": 3521
+    },
+    {
+      "scaffold_smiles": "(acyclic)",
+      "count": 2761
+    },
+    {
+      "scaffold_smiles": "c1ccncc1",
+      "count": 305
+    },
+    {
+      "scaffold_smiles": "C1CCCCC1",
+      "count": 148
+    },
+    {
+      "scaffold_smiles": "c1ccoc1",
+      "count": 138
+    },
+    {
+      "scaffold_smiles": "c1ccc2ccccc2c1",
+      "count": 123
+    },
+    {
+      "scaffold_smiles": "c1ccc2scnc2c1",
+      "count": 108
+    },
+    {
+      "scaffold_smiles": "c1ccc2[nH]ccc2c1",
+      "count": 96
+    },
+    {
+      "scaffold_smiles": "c1ccc(-c2ccccc2)cc1",
+      "count": 89
+    },
+    {
+      "scaffold_smiles": "C1CCNC1",
+      "count": 86
+    },
+    {
+      "scaffold_smiles": "C1=CCCCC1",
+      "count": 83
+    },
+    {
+      "scaffold_smiles": "O=C1C=CCCC1",
+      "count": 80
+    },
+    {
+      "scaffold_smiles": "c1cc[nH]c1",
+      "count": 80
+    },
+    {
+      "scaffold_smiles": "c1ccsc1",
+      "count": 75
+    },
+    {
+      "scaffold_smiles": "C1CCNCC1",
+      "count": 72
+    },
+    {
+      "scaffold_smiles": "O=c1ccc2ccccc2o1",
+      "count": 67
+    },
+    {
+      "scaffold_smiles": "c1ccc2ncccc2c1",
+      "count": 62
+    },
+    {
+      "scaffold_smiles": "O=C(/C=C/c1ccccc1)c1ccccc1",
+      "count": 60
+    },
+    {
+      "scaffold_smiles": "C1CCOCC1",
+      "count": 56
+    },
+    {
+      "scaffold_smiles": "O=C1C=CC(=O)C=C1",
+      "count": 53
+    }
+  ]
+}

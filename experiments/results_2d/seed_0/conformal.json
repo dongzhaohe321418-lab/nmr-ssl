@@ -1,0 +1,26 @@
+{
+  "seed": 0,
+  "alpha": 0.05,
+  "c": {
+    "q_ppm": 20.49984359741211,
+    "coverage": {
+      "n": 830,
+      "covered_frac": 0.9903614457831326,
+      "target_coverage": 0.95,
+      "half_width_ppm": 20.49984359741211
+    },
+    "n_cal": 845,
+    "n_test": 830
+  },
+  "h": {
+    "q_ppm": 1.2125091552734375,
+    "coverage": {
+      "n": 533,
+      "covered_frac": 0.9624765478424016,
+      "target_coverage": 0.95,
+      "half_width_ppm": 1.2125091552734375
+    },
+    "n_cal": 569,
+    "n_test": 533
+  }
+}

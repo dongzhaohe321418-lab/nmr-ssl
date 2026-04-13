@@ -1,0 +1,74 @@
+{
+  "seed": 0,
+  "best_val_c_mae": 4.88958425398868,
+  "q_c": 13.873733520507812,
+  "q_h": 1.064795970916748,
+  "n_stereo_candidates_in_test": 5,
+  "demos": [
+    {
+      "smiles": "[H][C@@]12CC(=O)/C(=C(C)/C=C/C=C(C)/C=C/C(OCC)C(C)(C)O)[C@@]1(C)CC[C@]1([H])[C@]2(C)CC[C@@]([H])(OC(C)=O)[C@]1(C)C(=O)O",
+      "nmr_id": "10027967",
+      "n_chiral_atoms": 6,
+      "n_ez_bonds": 4,
+      "n_atoms": 44,
+      "n_hsqc_peaks": 18,
+      "worst_h_residual": 1.9803657150268554,
+      "worst_c_residual": 14.363006591796875,
+      "h_all_within": false,
+      "c_all_within": false,
+      "consistent_at_95": false
+    },
+    {
+      "smiles": "[H][C@@]12CC(=O)/C(=C(/C)C(=O)/C=C/C(C)=C/C=C/C(C)(C)O)[C@@]1(C)CC[C@]1([H])[C@]2(C)CC[C@@]([H])(O)[C@]1(C)C(=O)O",
+      "nmr_id": "22047",
+      "n_chiral_atoms": 6,
+      "n_ez_bonds": 4,
+      "n_atoms": 39,
+      "n_hsqc_peaks": 17,
+      "worst_h_residual": 0.7237007141113283,
+      "worst_c_residual": 19.731027221679682,
+      "h_all_within": true,
+      "c_all_within": false,
+      "consistent_at_95": false
+    },
+    {
+      "smiles": "[H]O[C@H]1[C@H](O[H])[C@H](O[H])[C@H](O[H])[C@@H](O[H])[C@H]1O[H]",
+      "nmr_id": "10026409",
+      "n_chiral_atoms": 6,
+      "n_ez_bonds": 0,
+      "n_atoms": 18,
+      "n_hsqc_peaks": 4,
+      "worst_h_residual": 1.376327507019043,
+      "worst_c_residual": 3.9904708862304688,
+      "h_all_within": false,
+      "c_all_within": true,
+      "consistent_at_95": false
+    },
+    {
+      "smiles": "C=C(C)C1CCC2(C)CC[C@]3(C)C(CCC4[C@@]5(C)CC[C@H](O)C(C)(C)C5CC[C@]43C)C12",
+      "nmr_id": "10026488",
+      "n_chiral_atoms": 4,
+      "n_ez_bonds": 0,
+      "n_atoms": 31,
+      "n_hsqc_peaks": 24,
+      "worst_h_residual": 2.218687124252319,
+      "worst_c_residual": 9.38106994628906,
+      "h_all_within": false,
+      "c_all_within": true,
+      "consistent_at_95": false
+    },
+    {
+      "smiles": "[H][C@]12N[C@@]([H])(C)C(=O)N1c1ccccc1C21C[C@H]2C(=O)N[C@@H]1c1nc3ccccc3c(=O)n12",
+      "nmr_id": "10027266",
+      "n_chiral_atoms": 4,
+      "n_ez_bonds": 0,
+      "n_atoms": 33,
+      "n_hsqc_peaks": 12,
+      "worst_h_residual": 0.8857876930236817,
+      "worst_c_residual": 9.89200134277344,
+      "h_all_within": true,
+      "c_all_within": true,
+      "consistent_at_95": true
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "labeled_frac": 0.02,
+  "n_labeled": 84,
+  "n_unlabeled": 4152,
+  "results": {
+    "supervised": {
+      "test_mae": 7.447109052556429,
+      "best_val_mae": 7.638053926678712,
+      "elapsed_sec": 5.882839679718018
+    },
+    "sort_match_ssl": {
+      "test_mae": 3.914654948251152,
+      "best_val_mae": 3.9698949545124274,
+      "elapsed_sec": 417.72071504592896
+    }
+  }
+}

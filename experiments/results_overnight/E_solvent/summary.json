@@ -1,0 +1,99 @@
+{
+  "name": "E_solvent",
+  "n_molecules": 1603,
+  "solvent_counter": {
+    "CDCl3": 1057,
+    "Acetone": 94,
+    "C6D6": 37,
+    "DMSO": 186,
+    "D2O": 26,
+    "MeOD": 197,
+    "Pyridine": 69,
+    "DCM": 2,
+    "THF": 1,
+    "Trifluoroacetic Acid (TFA-D1, C2DF3O2)": 1,
+    "CD3CN": 5,
+    "TETRACHLORO-METHANE (CCl4) 1:Unknown": 1,
+    "TETRACHLORO-METHANE (CCl4)": 11,
+    "Dimethylether-D6 (CD3OCD3)": 1,
+    "Dimethylformamide-D7 (DMF-D7, CDON(CD3)2 )": 1,
+    "Formic Acid-D2 (DCOOD)": 3,
+    "Tetrachloro-Ethanol (C2D2Cl4)": 1
+  },
+  "top_solvents_used": [
+    "CDCl3",
+    "MeOD",
+    "DMSO",
+    "Acetone",
+    "Pyridine"
+  ],
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "variants": [
+    "supervised",
+    "sort_match_ssl"
+  ],
+  "aggregate": {
+    "supervised": {
+      "mean": 5.700624132856283,
+      "std": 0.3185823606398503,
+      "n": 3,
+      "values": [
+        6.073737427567566,
+        5.295362358106339,
+        5.732772612894943
+      ]
+    },
+    "sort_match_ssl": {
+      "mean": 4.565144582196977,
+      "std": 0.217672409001103,
+      "n": 3,
+      "values": [
+        4.503513563924761,
+        4.334764513938363,
+        4.857155668727808
+      ]
+    }
+  },
+  "per_seed": {
+    "0": {
+      "supervised": {
+        "test_mae": 6.073737427567566,
+        "best_val_mae": 6.229742874247791,
+        "elapsed_sec": 4.831294775009155
+      },
+      "sort_match_ssl": {
+        "test_mae": 4.503513563924761,
+        "best_val_mae": 4.648280021114221,
+        "elapsed_sec": 44.08675694465637
+      }
+    },
+    "1": {
+      "supervised": {
+        "test_mae": 5.295362358106339,
+        "best_val_mae": 5.262465697750426,
+        "elapsed_sec": 4.375517845153809
+      },
+      "sort_match_ssl": {
+        "test_mae": 4.334764513938363,
+        "best_val_mae": 4.230062403766075,
+        "elapsed_sec": 41.22190880775452
+      }
+    },
+    "2": {
+      "supervised": {
+        "test_mae": 5.732772612894943,
+        "best_val_mae": 5.548510378506517,
+        "elapsed_sec": 4.40308690071106
+      },
+      "sort_match_ssl": {
+        "test_mae": 4.857155668727808,
+        "best_val_mae": 4.803259735898033,
+        "elapsed_sec": 40.3219108581543
+      }
+    }
+  }
+}

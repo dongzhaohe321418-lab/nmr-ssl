@@ -1,0 +1,93 @@
+{
+  "name": "D_robustness",
+  "seeds": [
+    0,
+    1
+  ],
+  "per_corruption": {
+    "clean": {
+      "corruption": {
+        "noise_sigma": 0.0,
+        "drop_frac": 0.0,
+        "spurious_frac": 0.0
+      },
+      "per_seed": {
+        "0": {
+          "best_val_mae": 3.3636776084567086,
+          "test_mae": 3.2943469151002955,
+          "elapsed_sec": 3177.6627099514008
+        },
+        "1": {
+          "best_val_mae": 3.2814659734991425,
+          "test_mae": 3.3802878619679504,
+          "elapsed_sec": 2509.920886993408
+        }
+      },
+      "mean": 3.3373173885341227,
+      "std": 0.04297047343382743
+    },
+    "noise_1ppm": {
+      "corruption": {
+        "noise_sigma": 1.0,
+        "drop_frac": 0.0,
+        "spurious_frac": 0.0
+      },
+      "per_seed": {
+        "0": {
+          "best_val_mae": 3.4536884069739906,
+          "test_mae": 3.3715975215777063,
+          "elapsed_sec": 2801.962042093277
+        },
+        "1": {
+          "best_val_mae": 3.2788449558015547,
+          "test_mae": 3.3192171200420297,
+          "elapsed_sec": 2761.26638507843
+        }
+      },
+      "mean": 3.3454073208098682,
+      "std": 0.02619020076783829
+    },
+    "drop_15": {
+      "corruption": {
+        "noise_sigma": 0.0,
+        "drop_frac": 0.15,
+        "spurious_frac": 0.0
+      },
+      "per_seed": {
+        "0": {
+          "best_val_mae": 3.7710462105833846,
+          "test_mae": 3.6718589971477704,
+          "elapsed_sec": 2734.3396832942963
+        },
+        "1": {
+          "best_val_mae": 3.8787281377767053,
+          "test_mae": 3.937920638301243,
+          "elapsed_sec": 1414.2128469944
+        }
+      },
+      "mean": 3.804889817724507,
+      "std": 0.13303082057673632
+    },
+    "noise_1ppm_drop_10_spurious_10": {
+      "corruption": {
+        "noise_sigma": 1.0,
+        "drop_frac": 0.1,
+        "spurious_frac": 0.1
+      },
+      "per_seed": {
+        "0": {
+          "best_val_mae": 3.7905583708525,
+          "test_mae": 3.700014199048463,
+          "elapsed_sec": 3138.3426699638367
+        },
+        "1": {
+          "best_val_mae": 3.89872818770916,
+          "test_mae": 3.9440587678905463,
+          "elapsed_sec": 908.7624588012695
+        }
+      },
+      "mean": 3.8220364834695046,
+      "std": 0.12202228442104168
+    }
+  }
+}

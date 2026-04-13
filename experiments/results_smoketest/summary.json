@@ -1,0 +1,38 @@
+{
+  "args": {
+    "sdf": "data/nmrshiftdb2withsignals.sd",
+    "max_records": 500,
+    "max_atoms": 60,
+    "labeled_frac": 0.1,
+    "train_frac": 0.8,
+    "val_frac": 0.1,
+    "epochs": 3,
+    "batch_size": 32,
+    "hidden": 64,
+    "n_layers": 3,
+    "seed": 0,
+    "ssl_weight": 0.5,
+    "out": "experiments/results_smoketest",
+    "nucleus": "13C"
+  },
+  "n_kept": 476,
+  "n_labeled": 38,
+  "n_unlabeled": 342,
+  "results": {
+    "supervised": {
+      "test_mae": 85.66233602421796,
+      "best_val_mae": 90.47583988504228,
+      "elapsed_sec": 4.929430961608887
+    },
+    "naive_ssl": {
+      "test_mae": 79.78192403506559,
+      "best_val_mae": 84.5876263543869,
+      "elapsed_sec": 2.9373178482055664
+    },
+    "sort_match_ssl": {
+      "test_mae": 79.79602358728557,
+      "best_val_mae": 84.60173179836153,
+      "elapsed_sec": 2.2242350578308105
+    }
+  }
+}
