@@ -50,12 +50,12 @@ def main():
     ax.set_title("(a) $^{13}$C data efficiency")
     ax.grid(alpha=0.2)
     ax.legend(frameon=False, loc="upper right")
-    # Annotate #labeled molecules BELOW each 2-D SSL point to avoid colliding
-    # with the supervised-1D curve (which rises toward 18 ppm at 1%).
+    # Annotate #labeled molecules to the UPPER-RIGHT of each 2-D SSL point,
+    # clear of both the x-axis tick labels and the supervised-1D dashed curve.
     for x, y, n in zip(pct, ssl_c, n_labs):
-        ax.annotate(f"n={n}", xy=(x, y), xytext=(0, -14), textcoords="offset points",
-                    ha="center", fontsize=7, color=GREEN,
-                    bbox=dict(boxstyle="round,pad=0.1", fc="white", ec="none", alpha=0.7))
+        ax.annotate(f"n={n}", xy=(x, y), xytext=(6, 6), textcoords="offset points",
+                    ha="left", va="bottom", fontsize=7, color=GREEN,
+                    bbox=dict(boxstyle="round,pad=0.15", fc="white", ec="none", alpha=0.85))
 
     ax = axes[1]
     ax.plot(pct, sup_h, "s--", color=BLUE, linewidth=1.5, markersize=7, label="Supervised-1D (random)")

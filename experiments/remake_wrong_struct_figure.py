@@ -1,6 +1,5 @@
-"""Regenerate the wrong-structure negative-control figure with the
-constitutional-isomer control as the HEADLINE panel (instead of the easier
-random-pair control)."""
+"""Regenerate the wrong-structure negative-control figure as a clean 3-panel
+layout with short titles that do not collide at narrow figure widths."""
 
 from __future__ import annotations
 
@@ -25,6 +24,31 @@ plt.rcParams.update({
 GREEN = "#2ca02c"; RED = "#d62728"; GRAY = "#8c8c8c"
 
 
+def _draw(ax, own_rates, wrong_rates, wrong_color, wrong_label, title, cats, w, x, show_ylabel):
+    b1 = ax.bar(x - w / 2, own_rates, w, color=GREEN, edgecolor="black",
+                linewidth=0.5, label="Correct")
+    b2 = ax.bar(x + w / 2, wrong_rates, w, color=wrong_color, edgecolor="black",
+                linewidth=0.5, label=wrong_label)
+    # Correct bars: label on TOP (all are big)
+    for b, v in zip(b1, own_rates):
+        ax.text(b.get_x() + b.get_width() / 2, v + 1.8, f"{v:.0f}",
+                ha="center", va="bottom", fontsize=7, color="black")
+    # Wrong bars: label on TOP of the bar (even when small, since y-axis
+    # is 0-115 the text has room). For visibility on small bars we place
+    # the label slightly higher than the bar top.
+    for b, v in zip(b2, wrong_rates):
+        y_text = max(v, 2) + 1.8
+        ax.text(b.get_x() + b.get_width() / 2, y_text, f"{v:.0f}",
+                ha="center", va="bottom", fontsize=7, color=wrong_color)
+    ax.set_xticks(x); ax.set_xticklabels(cats, fontsize=9)
+    if show_ylabel:
+        ax.set_ylabel("Pass rate (%)")
+    ax.set_title(title, fontsize=10)
+    ax.set_ylim(0, 120)
+    ax.legend(frameon=False, loc="upper right", fontsize=7,
+              handlelength=1.2, handletextpad=0.4)
+
+
 def main():
     with (ROOT / "experiments" / "results_2d" / "realistic_isomer_control.json").open() as f:
         iso = json.load(f)
@@ -37,57 +61,42 @@ def main():
     rand_wrong = rand["wrong_structure"]["wrong"]
 
     cats = ["$^{1}$H", "$^{13}$C", "Joint"]
-    fig, axes = plt.subplots(1, 3, figsize=(6.4, 2.9))
     x = np.arange(len(cats))
     w = 0.36
 
-    # Panel A: constitutional isomer (HEADLINE)
-    ax = axes[0]
-    iso_own_rates = [iso_corr["own_h_rate"] * 100, iso_corr["own_c_rate"] * 100, iso_corr["own_both_rate"] * 100]
-    iso_wrong_rates = [iso_corr["wrong_h_rate"] * 100, iso_corr["wrong_c_rate"] * 100, iso_corr["wrong_both_rate"] * 100]
-    b1 = ax.bar(x - w / 2, iso_own_rates, w, color=GREEN, edgecolor="black", linewidth=0.5, label="Correct")
-    b2 = ax.bar(x + w / 2, iso_wrong_rates, w, color=RED, edgecolor="black", linewidth=0.5, label="Isomer (hard)")
-    for b, v in zip(b1, iso_own_rates):
-        ax.text(b.get_x() + b.get_width() / 2, v + 1.2, f"{v:.0f}", ha="center", va="bottom", fontsize=7)
-    for b, v in zip(b2, iso_wrong_rates):
-        ax.text(b.get_x() + b.get_width() / 2, v + 1.2, f"{v:.0f}", ha="center", va="bottom", fontsize=7)
-    ax.set_xticks(x); ax.set_xticklabels(cats, fontsize=9)
-    ax.set_ylabel("Pass rate (%)")
-    ax.set_title("(a) Constitutional isomer (n=74)")
-    ax.set_ylim(0, 115)
-    ax.legend(frameon=False, loc="upper left", fontsize=8)
+    fig, axes = plt.subplots(1, 3, figsize=(6.5, 2.9))
 
-    # Panel B: scaffold neighbor
-    ax = axes[1]
-    sc_own_rates = [iso_sc["own_h_rate"] * 100, iso_sc["own_c_rate"] * 100, iso_sc["own_both_rate"] * 100]
-    sc_wrong_rates = [iso_sc["wrong_h_rate"] * 100, iso_sc["wrong_c_rate"] * 100, iso_sc["wrong_both_rate"] * 100]
-    b1 = ax.bar(x - w / 2, sc_own_rates, w, color=GREEN, edgecolor="black", linewidth=0.5, label="Correct")
-    b2 = ax.bar(x + w / 2, sc_wrong_rates, w, color="#ff7f0e", edgecolor="black", linewidth=0.5, label="Scaffold nb.")
-    for b, v in zip(b1, sc_own_rates):
-        ax.text(b.get_x() + b.get_width() / 2, v + 1.2, f"{v:.0f}", ha="center", va="bottom", fontsize=7)
-    for b, v in zip(b2, sc_wrong_rates):
-        ax.text(b.get_x() + b.get_width() / 2, v + 1.2, f"{v:.0f}", ha="center", va="bottom", fontsize=7)
-    ax.set_xticks(x); ax.set_xticklabels(cats, fontsize=9)
-    ax.set_title("(b) Scaffold nb. (n=93)")
-    ax.set_ylim(0, 115)
-    ax.legend(frameon=False, loc="upper left", fontsize=7)
+    # Panel (a): constitutional isomer — HEADLINE
+    iso_own_rates = [iso_corr["own_h_rate"] * 100,
+                     iso_corr["own_c_rate"] * 100,
+                     iso_corr["own_both_rate"] * 100]
+    iso_wrong_rates = [iso_corr["wrong_h_rate"] * 100,
+                       iso_corr["wrong_c_rate"] * 100,
+                       iso_corr["wrong_both_rate"] * 100]
+    _draw(axes[0], iso_own_rates, iso_wrong_rates, RED, "Isomer",
+          "(a) Const. isomer, n=74", cats, w, x, show_ylabel=True)
 
-    # Panel C: random pair
-    ax = axes[2]
-    rand_own_rates = [rand_own["h_rate"] * 100, rand_own["c_rate"] * 100, rand_own["both_rate"] * 100]
-    rand_wrong_rates = [rand_wrong["h_rate"] * 100, rand_wrong["c_rate"] * 100, rand_wrong["both_rate"] * 100]
-    b1 = ax.bar(x - w / 2, rand_own_rates, w, color=GREEN, edgecolor="black", linewidth=0.5, label="Correct")
-    b2 = ax.bar(x + w / 2, rand_wrong_rates, w, color=GRAY, edgecolor="black", linewidth=0.5, label="Random")
-    for b, v in zip(b1, rand_own_rates):
-        ax.text(b.get_x() + b.get_width() / 2, v + 1.2, f"{v:.0f}", ha="center", va="bottom", fontsize=7)
-    for b, v in zip(b2, rand_wrong_rates):
-        ax.text(b.get_x() + b.get_width() / 2, v + 1.2, f"{v:.0f}", ha="center", va="bottom", fontsize=7)
-    ax.set_xticks(x); ax.set_xticklabels(cats, fontsize=9)
-    ax.set_title("(c) Random (n=155)")
-    ax.set_ylim(0, 115)
-    ax.legend(frameon=False, loc="upper left", fontsize=7)
+    # Panel (b): scaffold neighbor
+    sc_own_rates = [iso_sc["own_h_rate"] * 100,
+                    iso_sc["own_c_rate"] * 100,
+                    iso_sc["own_both_rate"] * 100]
+    sc_wrong_rates = [iso_sc["wrong_h_rate"] * 100,
+                      iso_sc["wrong_c_rate"] * 100,
+                      iso_sc["wrong_both_rate"] * 100]
+    _draw(axes[1], sc_own_rates, sc_wrong_rates, "#ff7f0e", "Scaffold",
+          "(b) Scaffold nb., n=93", cats, w, x, show_ylabel=False)
 
-    fig.subplots_adjust(wspace=0.35)
+    # Panel (c): random pair
+    rand_own_rates = [rand_own["h_rate"] * 100,
+                      rand_own["c_rate"] * 100,
+                      rand_own["both_rate"] * 100]
+    rand_wrong_rates = [rand_wrong["h_rate"] * 100,
+                        rand_wrong["c_rate"] * 100,
+                        rand_wrong["both_rate"] * 100]
+    _draw(axes[2], rand_own_rates, rand_wrong_rates, GRAY, "Random",
+          "(c) Random, n=155", cats, w, x, show_ylabel=False)
+
+    fig.subplots_adjust(wspace=0.32)
     fig.tight_layout()
     for ext in ("png", "pdf"):
         fig.savefig(OUT / f"fig_wrong_struct_v4.{ext}", bbox_inches="tight")
