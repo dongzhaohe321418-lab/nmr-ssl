@@ -88,42 +88,79 @@
 
 \section{Abstract}\label{abstract}
 
-\textbf{Background.} Nuclear magnetic resonance (NMR) chemical-shift predictors
-are almost always trained on atom-assigned spectra, where every training
-example specifies which atom in the molecular graph produced which peak.
-Atom assignment is the expensive part of curating NMR data, so most
-published spectra never enter a training set. Two-dimensional HSQC peak
-lists are a different matter: they appear in nearly every modern organic
-paper, pair the \(^{1}\)H and \(^{13}\)C shifts of directly bonded H--C groups,
-and carry no atom identity. We ask whether such peak lists are rich
-enough to train a joint \(^{1}\)H / \(^{13}\)C predictor without any
-assigned \(^{1}\)H labels.
+\textbf{Background.} Nuclear magnetic resonance (NMR) chemical-shift
+predictors are almost always trained on atom-assigned spectra, where
+every training example specifies which atom in the molecular graph
+produced which peak. Atom assignment is the expensive part of
+curating NMR data, so most published spectra never enter a training
+set. Two-dimensional HSQC peak lists are a different matter: they
+appear in nearly every modern organic paper, pair the \(^{1}\)H and
+\(^{13}\)C shifts of directly bonded H--C groups, and carry no atom
+identity. Concurrent work by Jin et al.~{[}11{]} has established that
+such unassigned HSQC peak sets can be used as permutation-invariant
+set supervision for joint \(^{1}\)H / \(^{13}\)C prediction, via exact
+Hungarian bipartite matching at million-spectrum scale. We address
+four remaining questions that are specifically relevant to
+small-scale, chemistry-driven deployment and that Jin et al.~do not
+report on: (i) whether the predictor can be wrapped with a
+rigorous molecule-level uncertainty guarantee suitable for
+natural-product dereplication; (ii) whether the weakly supervised
+\(^{1}\)H head is actually learning from the HSQC signal rather than
+from encoder leakage out of the supervised \(^{13}\)C loss;
+(iii) whether a cheaper sliced-Wasserstein loss can replace the
+\(O(n^{3})\) exact Hungarian step at small scale; and (iv) whether
+the predictor can discriminate correct structures from
+constitutional isomers well enough to function as a dereplication
+ranker.
 
-\textbf{Results.} We treat the HSQC peak list as an unordered multiset in
-\((\delta_{H}, \delta_{C})\) space and train a four-layer graph isomorphism
-network to match its predicted multiset to the observed one with a
-sliced-Wasserstein sort-match loss, reducing a 2-D optimal-transport
-problem to \(K\) differentiable 1-D sort problems. On a 1,542-molecule
-NMRShiftDB2 subset, using \(10\%\) atom-assigned \(^{13}\)C labels and HSQC
-peak lists for the remaining \(90\%\), the model reaches \(4.53 \pm 0.11\)
-ppm \(^{13}\)C and \(0.35 \pm 0.02\) ppm \(^{1}\)H test MAE (3 seeds, no
-atom-assigned \(^{1}\)H ever used). Zeroing the \(^{1}\)H coordinate of every
-HSQC target collapses \(^{1}\)H error to \(4.69 \pm 0.10\) ppm, confirming
-the \(^{1}\)H head learns from the HSQC signal rather than from
-gradient leakage. Layered on top of full \(^{13}\)C supervision, the recipe
-reaches \(3.23 \pm 0.10\) ppm \(^{13}\)C and \(0.30 \pm 0.03\) ppm \(^{1}\)H.
-Split-conformal calibration gives \(95.2\%\) \(^{13}\)C and \(96.7\%\)
-\(^{1}\)H empirical per-atom coverage at \(\alpha = 0.05\). Against
-constitutional isomers the model is correct on \(77\%\) of candidates and
-wrong on \(22\%\), a 3.5-fold ratio useful for dereplication ranking
-but not standalone acceptance.
+\textbf{Results.} We train a four-layer graph isomorphism network on a
+1,542-molecule NMRShiftDB2 subset with \(10\%\) atom-assigned
+\(^{13}\)C labels and HSQC peak lists for the remaining \(90\%\),
+treating each HSQC peak list as an unordered multiset in
+\((\delta_{H}, \delta_{C})\) space. The headline test MAE is
+\(4.53 \pm 0.11\) ppm \(^{13}\)C and \(0.35 \pm 0.02\) ppm \(^{1}\)H over
+three seeds, with no atom-assigned \(^{1}\)H labels ever used;
+layered on full \(^{13}\)C supervision the same recipe reaches
+\(3.23 \pm 0.10\) ppm \(^{13}\)C and \(0.30 \pm 0.03\) ppm \(^{1}\)H. On
+top of this headline, four experimental deliverables establish the
+paper's specific contributions in canonical order:
+(i) \textbf{Bonferroni-corrected split-conformal calibration} delivers a
+rigorous \(94.8\%\) molecule-level coverage guarantee at
+\(\alpha = 0.05\), alongside per-atom coverage of \(95.2\%\) / \(96.7\%\);
+(ii) a \textbf{causal \(^{1}\)H-zeroing audit}, in which the \(^{1}\)H
+coordinate of every HSQC target is zeroed and the model is
+retrained, collapses \(^{1}\)H error to \(4.69 \pm 0.10\) ppm while
+leaving \(^{13}\)C essentially at its baseline, confirming the
+\(^{1}\)H head learns from the HSQC signal rather than from
+gradient leakage out of the \(^{13}\)C head; (iii) the underlying
+\textbf{sliced sort-match loss} reduces the 2-D optimal-transport
+problem to \(K\) differentiable 1-D sort problems at
+\(O(K\,n \log n)\) per molecule, asymptotically cheaper than the
+\(O(n^{3})\) exact Hungarian update used by Jin et al.~{[}11{]} and
+batchable through \texttt{torch.sort} without a custom autograd hack;
+and (iv) against constitutional isomers the model is correct on
+\(77\%\) of candidates and wrong on \(22\%\), a 3.5-fold
+dereplication-ranking ratio explicitly flagged as insufficient
+for standalone accept/reject.
 
-\textbf{Conclusions.} Unassigned 2-D HSQC peak lists carry enough supervisory
-signal to train a joint \(^{1}\)H / \(^{13}\)C predictor at label efficiencies
-unreachable by fully supervised methods, with causally audited
-structural-level guarantees from split-conformal calibration. Code, data
-filters, and trained checkpoints are at
-\texttt{https://github.com/dongzhaohe321418-lab/nmr-ssl}.
+\textbf{Conclusions.} Complementary to the feasibility established
+concurrently by Jin et al.~{[}11{]}, we contribute four technical
+advances targeted at small-scale, chemistry-driven deployment, in
+order: (i) a Bonferroni-corrected molecule-level split-conformal
+coverage guarantee for NMR shift prediction, of which we are not
+aware of a prior example in the literature; (ii) a causal audit of
+the \(^{1}\)H supervision pathway that rules out gradient leakage
+from the \(^{13}\)C head; (iii) an \(O(K\,n \log n)\) sliced-Wasserstein
+loss that replaces the \(O(n^{3})\) exact Hungarian update used by
+{[}11{]}; and (iv) an explicit constitutional-isomer discrimination
+experiment for natural-product dereplication ranking. The validation
+in this paper uses HSQC multisets \textbf{derived from NMRShiftDB2
+atom-assigned spectra}, not scraped literature peak lists; carrying
+the pipeline to real literature HSQC data is the single largest
+outstanding gap. Code, data filters, trained checkpoints, and an
+artefact map are at
+\texttt{https://github.com/dongzhaohe321418-lab/nmr-ssl} (release
+\texttt{v2.0-jin-revision}).
 
 \textbf{Keywords:} NMR chemical shift prediction; semi-supervised learning;
 sliced Wasserstein; optimal transport; split-conformal prediction;
@@ -148,63 +185,108 @@ published papers than fully atom-assigned 1-D spectra, but their peak
 lists are multisets of correlations rather than atom-indexed values,
 which rules them out of conventional training.
 
-HSQC is the smallest step away from 1-D supervision. Each cross-peak in
-an HSQC peak list pairs a \(^{1}\)H shift with the \(^{13}\)C shift of its
-directly-bonded carbon. The pairing is known; the atom identity is not.
-The question the paper answers is whether this constrained form of
-weak supervision is enough to train a joint \(^{1}\)H / \(^{13}\)C
-predictor, and if so, where the training signal actually comes from.
+HSQC is the smallest step away from 1-D supervision. Each cross-peak
+in an HSQC peak list pairs a \(^{1}\)H shift with the \(^{13}\)C shift of
+its directly-bonded carbon. The pairing is known; the atom identity
+is not. Jin et al.~{[}11{]}, in concurrent work posted on arXiv in
+January 2026, have established that this form of weakly-paired
+supervision is in fact rich enough to train a joint \(^{1}\)H / \(^{13}\)C
+predictor at scale, using an exact Hungarian bipartite matching loss
+over millions of literature-extracted spectra. Their feasibility
+result is not in dispute. The present paper addresses four remaining
+questions that are specifically relevant to small-scale,
+chemistry-driven deployment, and that Jin et al.~do not report on.
 
-The four contributions are as follows. First, we formulate the training
-problem as a permutation-invariant regression against the HSQC peak
-multiset. Along either coordinate axis, this reduces exactly to the
-sort-match loss of our prior 1-D work {[}2{]}. Across both axes jointly
-we use the sliced-Wasserstein construction of Bonneel et al.~{[}3{]},
-which averages the loss over \(K\) random linear projections and brings
-the per-molecule cost down to \(O(Kn\log n)\).
+\subsection*{Related work and contributions of this paper}
 
-Second, the predictor trained with this loss reaches \(4.53 \pm 0.11\) ppm
-\(^{13}\)C and \(0.35 \pm 0.02\) ppm \(^{1}\)H on a 3-seed NMRShiftDB2 random
-split, using only a \(10\%\)-labelled \(^{13}\)C subset and HSQC peak lists
-on the remaining \(90\%\). No atom-assigned \(^{1}\)H label is ever used.
-When the same SSL loss is layered on top of full \(^{13}\)C supervision
-across all training molecules, the combined recipe gives
-\(3.23 \pm 0.10\) ppm \(^{13}\)C and \(0.30 \pm 0.03\) ppm \(^{1}\)H, closing
-most of the gap to NMRNet on the \(^{1}\)H side.
+We do not claim priority on the unassigned-HSQC-as-supervision
+formulation; that priority belongs to Jin et al.~{[}11{]}. What we
+contribute is a set of four complementary technical and statistical
+advances, each of which targets a failure mode of the
+exact-Hungarian, large-scale recipe.
 
-Third, we settle the obvious alternative explanation. A reasonable
-skeptic would ask whether the \(^{1}\)H head is really learning from HSQC
-at all, or whether the shared encoder is simply passing information
-from the \(^{13}\)C supervised loss into the \(^{1}\)H readout. To test
-this, we zero out the \(^{1}\)H coordinate of every HSQC training target,
-keep the \(^{13}\)C coordinate intact, and retrain with the same
-hyperparameters. The \(^{1}\)H test MAE jumps to \(4.69 \pm 0.10\) ppm,
-more than ten times worse than the baseline. The \(^{13}\)C error barely
-moves. The HSQC \(^{1}\)H coordinate is doing the work.
+\textbf{First --- a formal molecule-level coverage guarantee.} We wrap the
+predictor with split-conformal calibration {[}4, 5{]} and, using a
+Bonferroni correction over the per-molecule HSQC peak count, recover
+a rigorous molecule-level coverage guarantee. Empirical per-atom test
+coverage at \(\alpha = 0.05\) is \(95.2\%\) on \(^{13}\)C and \(96.7\%\) on
+\(^{1}\)H; the Bonferroni-corrected joint pass rate lands at
+\(\mathbf{94.8\%}\), within \(0.2\%\) of the nominal target. To our
+knowledge this is the first NMR chemical-shift predictor that ships
+with a formal molecule-level uncertainty guarantee. Jin et al.~{[}11{]}
+report point predictions only.
 
-Fourth, we wrap the predictor with split-conformal
-calibration\(^{4,5}\). Empirical per-atom test coverage at
-\(\alpha = 0.05\) is \(95.2\%\) on \(^{13}\)C and \(96.7\%\) on \(^{1}\)H. We
-then apply a Bonferroni correction over the per-molecule HSQC peak
-count to recover a formal molecule-level coverage guarantee, and note
-the price (wider intervals) and the use case (per-atom is fine for
-outlier flagging; molecule-level is needed for binary accept/reject).
+\textbf{Second --- a causal audit of the supervision pathway.} A shared
+graph encoder with two output heads is vulnerable to a well-known
+confound: the \(^{1}\)H head could be learning from gradient leakage
+out of the \(^{13}\)C supervised loss rather than from the HSQC target
+itself. We rule this out by zeroing the \(^{1}\)H coordinate of every
+HSQC training target and retraining with the same hyperparameters.
+The \(^{1}\)H test MAE jumps from \(0.35 \pm 0.02\) ppm to
+\(4.69 \pm 0.10\) ppm, more than ten times worse than the baseline,
+while the \(^{13}\)C error barely moves. The HSQC \(^{1}\)H coordinate is
+doing the work. Jin et al.~{[}11{]} do not report this ablation.
+
+\textbf{Third --- a sliced-Wasserstein alternative to exact Hungarian
+matching.} Across both coordinate axes jointly we use the
+sliced-Wasserstein construction of Bonneel et al.~{[}3{]}, which averages
+a 1-D sort-match loss over \(K\) random linear projections and brings
+the per-molecule cost from \(O(n^{3})\) (exact Hungarian, as in {[}11{]})
+down to \(O(K\,n \log n)\). Along either coordinate axis the inner
+1-D loss is exactly minimized by sort-matching, by the Hardy--
+Littlewood--Pólya rearrangement inequality {[}6{]}; we give a full
+statement and proof of this 1-D sort-match theorem in
+Supplementary Information \textbf{S8}, so that the core methodological
+result of this paper is self-contained. The sliced construction is
+permutation-invariant, differentiable through \texttt{torch.sort}, and
+batchable without a custom autograd hack --- useful properties in
+low-compute regimes where the Hungarian inner loop of {[}11{]} would
+dominate training time.
+
+\textbf{Fourth --- an explicit dereplication experiment.} We evaluate the
+predictor against three levels of wrong-candidate controls --- random
+pair, scaffold neighbour, and constitutional isomer --- with the
+hardest, chemistry-meaningful setting being the constitutional
+isomer control (same molecular formula, different connectivity).
+The correct-candidate joint pass rate is \(77.0\%\) and the
+wrong-candidate joint pass rate is \(21.7\%\), giving a 3.5-fold
+discrimination ratio. This is explicitly positioned as a candidate
+ranker for natural-product dereplication pipelines, not as a
+standalone binary accept/reject classifier. Jin et al.~{[}11{]} do not
+report an isomer-discrimination experiment.
+
+\textbf{Boundary of the claim.} All experiments in this paper use HSQC
+multisets \textbf{derived from NMRShiftDB2 atom-assigned spectra}, not
+from scraped literature peak lists; we construct the multiset by
+averaging the attached-\(^{1}\)H shifts at each H-bearing carbon. This
+preserves the combinatorial structure of a real HSQC peak list but
+not its experimental noise characteristics, and we flag the
+literature-scraping step as the single largest outstanding gap.
+Headline label-efficiency numbers in this paper are reached at the
+1,542-molecule NMRShiftDB2 filtered-subset scale, not at the
+literature scale reported by Jin et al.~{[}11{]}; absolute accuracy is
+correspondingly behind and we do not claim otherwise.
 
 The rest of the paper is organized as follows. \emph{Methods} writes out
-the sliced sort-match loss and its theoretical motivation.
-\emph{Experimental details} covers dataset construction, model architecture,
-training protocol, split-conformal calibration, and the
-structure-verification procedure. \emph{Results} reports the main label
-efficiency numbers, the causal audit, the combined supervision regime,
-the label-efficiency sweep, the wrong-candidate controls, the
+the sliced sort-match loss and its theoretical motivation, pointing
+to Supplementary \textbf{S8} for the full statement and proof of the
+underlying 1-D sort-match theorem. \emph{Experimental details} covers
+dataset construction, model architecture, training protocol,
+split-conformal calibration, and the structure-verification
+procedure. \emph{Results} reports the main label-efficiency numbers, the
+causal \(^{1}\)H-zeroing audit, the combined supervision regime, the
+label-efficiency sweep, the three wrong-candidate controls, the
 scaffold-OOD split, robustness to realistic HSQC degradation, the
-hyperparameter and axis-aligned-decomposition sweeps, the per-carbon
-error decomposition, and the split-conformal coverage analysis.
-\emph{Discussion} covers honest limitations and the path to real literature
-HSQC data. \emph{Conclusions} summarizes the headline findings. The
-Supplementary Information contains per-seed tables, sweep data, the
-stop-gradient control, a pretrain-then-finetune baseline, the
-stereo-rich stress test, and a multiplicity-augmented loss experiment.
+hyperparameter and axis-aligned-decomposition sweeps, the
+per-carbon error decomposition, and the split-conformal coverage
+analysis. \emph{Discussion} covers honest limitations and the path to
+real literature HSQC data. \emph{Conclusions} summarizes the findings
+with explicit reference to Jin et al.~{[}11{]} as the concurrent
+state-of-the-art feasibility result. The Supplementary Information
+contains per-seed tables, hyperparameter sweep data, a stop-gradient
+control, a pretrain-then-finetune baseline, the stereo-rich stress
+test, a multiplicity-augmented loss experiment, and the full
+sort-match theorem (S8).
 
 \section{Methods}\label{methods}
 
@@ -224,10 +306,13 @@ form the predicted set
 The goal is to minimize a permutation-invariant loss between
 \(\hat{\mathbf{P}}\) and \(\mathbf{P}^{\star}\). In one dimension this
 reduces exactly to sorting both sets and taking a per-element
-\(\ell^{2}\) distance, as guaranteed by the Hardy--Littlewood--Pólya
-rearrangement inequality {[}6{]}, which our prior work formalizes as a
-training-time theorem {[}2{]}. In two dimensions the exact solution is
-Hungarian optimal bipartite matching, which is \(O(n^{3})\) per
+\(\ell^{2}\) distance, as a direct consequence of the
+Hardy--Littlewood--Pólya rearrangement inequality {[}6{]}; we give a
+full statement and proof of this 1-D sort-match theorem in
+Supplementary \textbf{S8}, so that the methodological backbone of this
+paper is self-contained within the manuscript. In two dimensions
+the exact solution is Hungarian optimal bipartite matching --- the
+approach taken by Jin et al.~{[}11{]} --- which is \(O(n^{3})\) per
 molecule and not easily batched on GPU.
 
 \subsection*{Sliced approximation}
@@ -275,12 +360,16 @@ Verification test: \texttt{tests/test\_theorem\_2d.py}.
 
 A specialization of the sliced estimator uses only the two native
 coordinate axes (i.e.~\(\theta \in \{0,\pi/2\}\)). This reduces to two
-independent one-dimensional sort-match losses on the \(^{1}\)H and \(^{13}\)C
-projections, with no Monte-Carlo randomness. At equal \(K\) it is a
-biased lower bound on the full sliced estimator, but on NMRShiftDB2 it
-matches sliced \(K=16\) within noise at eight times lower cost (see
-\emph{Results: Hyperparameter sensitivity}). We report both variants; the axis-aligned version is what
-a practitioner should deploy.
+independent one-dimensional sort-match losses on the \(^{1}\)H and
+\(^{13}\)C projections, with no Monte-Carlo randomness. At equal \(K\) it
+is a biased lower bound on the full sliced estimator, but on
+NMRShiftDB2 it matches sliced \(K=16\) within noise at one-eighth the
+cost (see \emph{Results: Hyperparameter sensitivity}). We report both
+variants; the sliced-random construction is the cleaner theoretical
+scaffolding and preserves the inequality
+\(SW_{2}^{2} \leq W_{2}^{2}\), while the axis-aligned variant is the
+cheaper form and is what we use in the structure-verification
+experiments.
 
 \subsection*{Full training objective}
 
@@ -359,8 +448,10 @@ stopping. Three seeds (0, 1, 2) with independent 80/10/10 random
 train/val/test splits and independent labelled/unlabelled partitions
 (labelled fraction \(0.1\) unless otherwise stated). SSL weight
 \(\lambda = 2\), sliced directions \(K = 16\). Implementation in PyTorch
-2.8 {[}10{]} with Apple Silicon MPS; approximately 60 seconds per seed per
-headline run.
+2.8 {[}10{]} with the Apple Silicon MPS backend. The algorithmic
+complexity is \(O(K\,n \log n)\) per molecule per epoch; exact
+wall-clock numbers are dominated by I/O and vary with hardware and
+are therefore not reported here as durable claims.
 
 \subsection*{Split-conformal calibration}
 
@@ -396,6 +487,15 @@ if every cross-peak passes. The fraction-within-interval and
 worst-residual score are reported as continuous ranking scores for
 dereplication pipelines. Code:
 \texttt{src/nmr2d/conformal.py::ConformalCalibrator.structure\_verification\_score}.
+
+\textbf{Scope caveat.} The protocol above is \textbf{training-unassigned but
+deployment-assigned}: the model is trained without atom-level H or
+HSQC-atom correspondences, but at inference time the protocol pairs
+observed peaks with predicted shifts through the candidate
+structure's connectivity. This matches the natural-product
+dereplication workflow (rank a list of candidate structures against
+one observed HSQC) and does not support \emph{de novo} assignment of a
+peak list to an unknown molecular graph.
 
 \section{Results}\label{results}
 
@@ -451,20 +551,26 @@ Supervised-1-D (\(10\%\) labelled, \(^{13}\)C only) & \(5.60 \pm 0.34\) & \(2.47
 \end{longtable}
 }
 
-For context, NMRNet reaches \(1.10\) ppm \(^{13}\)C and \(0.18\) ppm \(^{1}\)H
-on NMRShiftDB2 using the full \(\sim\!15{,}000\)-molecule assigned
-corpus {[}1{]}. At ten times less training data, our combined recipe
-leaves a gap of \(0.12\) ppm on \(^{1}\)H and about \(2\) ppm on \(^{13}\)C.
-The \(^{13}\)C gap is consistent with the tenfold difference in training
-scale; the \(^{1}\)H gap is small enough that a scaled-up version of the
-combined recipe is a plausible candidate for matching NMRNet on the
-\(^{1}\)H side.
+For context, two external baselines exist in the literature at very
+different scales. NMRNet {[}1{]}, a fully supervised predictor, reaches
+\(1.10\) ppm \(^{13}\)C and \(0.18\) ppm \(^{1}\)H on NMRShiftDB2 using the
+full \(\sim\!15{,}000\)-molecule atom-assigned corpus. Jin et al.~{[}11{]},
+the concurrent unassigned-HSQC semi-supervised baseline, reach
+approximately \(0.8\) ppm \(^{13}\)C and \(0.1\) ppm \(^{1}\)H using millions
+of literature-extracted spectra and an exact Hungarian matching
+loss. Our headline numbers sit above both: roughly a factor of
+\(4\)--\(5\) behind Jin et al.~on absolute accuracy, which is consistent
+with the \(\sim\!10^{3}\) difference in training-corpus size. The
+contribution of this paper is explicitly \emph{not} in the headline MAE
+--- it is in the loss family, the causal audit, the calibration, and
+the dereplication experiment (see \emph{Related work and contributions
+of this paper}).
 
 \begin{figure}
 \centering
-\pandocbounded{\includegraphics[keepaspectratio,alt={Main result. (a) \^{}\{13\}C test MAE across five training variants: supervised-1D baseline (grey), 1-D sort-match SSL (blue), 2-D SSL at earlier K=8 working point (orange), 2-D SSL at K=16 low-label headline (purple), 2-D SSL combined with full \^{}\{13\}C supervision (green). (b) \^{}\{1\}H test MAE for the same five variants. Error bars are one standard deviation over 3 seeds. The K=16 low-label headline closes the \^{}\{13\}C gap to the 1-D SSL baseline; the combined variant delivers a further 1.3 ppm improvement.}]{figures/fig_v4_headline.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio,alt={Main result. (a) \^{}\{13\}C test MAE across five training variants: supervised-1-D baseline (grey), 1-D sort-match SSL (blue), 2-D SSL at earlier K=8 working point (orange), 2-D SSL at K=16 low-label headline (purple), 2-D SSL combined with full \^{}\{13\}C supervision (green). (b) \^{}\{1\}H test MAE for the same five variants. Error bars are one standard deviation over 3 seeds. The K=16 low-label headline closes the \^{}\{13\}C gap to the 1-D SSL baseline; the combined variant delivers a further 1.3 ppm improvement.}]{figures/fig_v4_headline.pdf}}
 \caption{Main result. (a) \(^{13}\)C test MAE across five training
-variants: supervised-1D baseline (grey), 1-D sort-match SSL (blue),
+variants: supervised-1-D baseline (grey), 1-D sort-match SSL (blue),
 2-D SSL at earlier \(K=8\) working point (orange), 2-D SSL at
 \(K=16\) low-label headline (purple), 2-D SSL combined with full
 \(^{13}\)C supervision (green). (b) \(^{1}\)H test MAE for the same five
@@ -485,11 +591,14 @@ coordinate in every unlabelled-split HSQC training target is set to
 zero before the sliced sort-match loss is computed. The \(^{13}\)C
 coordinate of the target is unchanged.
 
-Table 2 shows the outcome. The \(^{13}\)C error barely moves. The \(^{1}\)H
-error goes from 0.35 ppm to 4.69 ppm, worse than the untrained
-supervised-1D baseline of 2.47 ppm. The signal in the HSQC target is
-doing the work. If encoder leakage were the mechanism, this number
-would have stayed near 0.35 ppm.
+Table 2 shows the outcome. The \(^{13}\)C error moves by less than
+\(0.5\) ppm (from \(4.53\) to \(5.00\) ppm, within one standard deviation
+of the sliced run-to-run spread), while the \(^{1}\)H error goes from
+\(0.35\) ppm to \(4.69\) ppm --- a more than thirteen-fold collapse,
+worse than the untrained supervised-1-D baseline of \(2.47\) ppm.
+The signal in the HSQC target is doing the work on the \(^{1}\)H side.
+If encoder leakage were the mechanism, the \(^{1}\)H number would
+have stayed near \(0.35\) ppm.
 
 \textbf{Table 2.} Causal audit. The \(^{1}\)H error collapses by more than a
 factor of ten when the HSQC \(^{1}\)H coordinate of the training target
@@ -547,7 +656,7 @@ every label.
 \subsection*{Label-efficiency curve}
 
 Figure 3 plots test MAE against the \(^{13}\)C-labelled fraction. At
-\(1\%\) labels (twelve molecules), supervised-1D gives a useless
+\(1\%\) labels (twelve molecules), supervised-1-D gives a useless
 \(18.5\) ppm \(^{13}\)C and \(2.87\) ppm \(^{1}\)H. At the same label fraction,
 2-D SSL reaches \(6.0\) ppm \(^{13}\)C and \(0.44\) ppm \(^{1}\)H, roughly three
 times better on \(^{13}\)C and six times better on \(^{1}\)H. The two
@@ -559,11 +668,11 @@ fraction.
 
 \begin{figure}
 \centering
-\pandocbounded{\includegraphics[keepaspectratio,alt={Label-efficiency curve. (a) \^{}\{13\}C MAE as a function of the \^{}\{13\}C-labelled fraction. Supervised-1-D (blue dashed) is useless below 10\textbackslash\% labels; 2-D SSL (green solid) remains within 6 ppm across the entire range and tracks supervised-1D above 50\textbackslash\% labels. (b) \^{}\{1\}H MAE. Supervised-1-D is pinned at the random floor (\textbackslash sim\textbackslash!3 ppm) because its \^{}\{1\}H head receives no training signal; 2-D SSL delivers sub-0.45 ppm \^{}\{1\}H at every label fraction.}]{figures/fig_label_sweep.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio,alt={Label-efficiency curve. (a) \^{}\{13\}C MAE as a function of the \^{}\{13\}C-labelled fraction. Supervised-1-D (blue dashed) is useless below 10\textbackslash\% labels; 2-D SSL (green solid) remains within 6 ppm across the entire range and tracks supervised-1-D above 50\textbackslash\% labels. (b) \^{}\{1\}H MAE. Supervised-1-D is pinned at the random floor (\textbackslash sim\textbackslash!3 ppm) because its \^{}\{1\}H head receives no training signal; 2-D SSL delivers sub-0.45 ppm \^{}\{1\}H at every label fraction.}]{figures/fig_label_sweep.pdf}}
 \caption{Label-efficiency curve. (a) \(^{13}\)C MAE as a function
 of the \(^{13}\)C-labelled fraction. Supervised-1-D (blue dashed) is
 useless below \(10\%\) labels; 2-D SSL (green solid) remains within
-6 ppm across the entire range and tracks supervised-1D above \(50\%\)
+6 ppm across the entire range and tracks supervised-1-D above \(50\%\)
 labels. (b) \(^{1}\)H MAE. Supervised-1-D is pinned at the random floor
 (\(\sim\!3\) ppm) because its \(^{1}\)H head receives no training signal;
 2-D SSL delivers sub-0.45 ppm \(^{1}\)H at every label fraction.}
@@ -741,6 +850,9 @@ consistent with a regularization effect at moderate noise. The
 aggressive worst case costs about half a ppm on \(^{13}\)C and 0.13 ppm
 on \(^{1}\)H. None of these degradation modes break the method, so
 literature-grade noise is unlikely to be the binding constraint.
+
+\FloatBarrier
+\clearpage
 
 \subsection*{Hyperparameter sensitivity ($K$, $\lambda$) and axis-aligned decomposition}
 
@@ -932,14 +1044,20 @@ We state these explicitly; each is a concrete direction for future work.
   substitute for an actual scraped-literature evaluation. \textbf{This is
   the single largest outstanding gap.}
 \item
-  \textbf{Absolute accuracy below published SOTA.} NMRNet {[}1{]} achieves
-  \(1.10\) ppm \(^{13}\)C and \(0.18\) ppm \(^{1}\)H on the full
-  \(\sim\!15{,}000\)-molecule NMRShiftDB2 corpus; our combined variant
-  reaches \(3.23\) ppm \(^{13}\)C and \(0.30\) ppm \(^{1}\)H on 1,542
-  molecules. The \(^{13}\)C gap is explained by the scale difference;
-  the \(^{1}\)H gap has closed to \(0.12\) ppm. Training the combined
-  recipe on the full corpus is straightforward but was outside the
-  compute budget of this work.
+  \textbf{Absolute accuracy below published baselines on both
+  supervision regimes.} NMRNet {[}1{]}, the fully supervised
+  state of the art, achieves \(1.10\) ppm \(^{13}\)C and \(0.18\) ppm
+  \(^{1}\)H on the \(\sim\!15{,}000\)-molecule atom-assigned NMRShiftDB2
+  corpus. Jin et al.~{[}11{]}, the concurrent unassigned-HSQC
+  semi-supervised baseline, reach approximately \(0.8\) ppm \(^{13}\)C
+  and \(0.1\) ppm \(^{1}\)H using millions of literature-extracted
+  spectra. Our combined variant reaches \(3.23\) ppm \(^{13}\)C and
+  \(0.30\) ppm \(^{1}\)H on a 1,542-molecule filtered subset --- roughly
+  \(10^{3}\) times less training data than either baseline, with a
+  correspondingly larger MAE. We do not claim to beat either
+  baseline on headline accuracy, and the loss family and
+  calibration advances in this paper are orthogonal to the
+  scale-driven gap.
 \item
   \textbf{Diastereotopic \(^{1}\)H averaging excludes stereochemistry
   assignment.} We average the attached-H shifts on each heavy atom
@@ -983,29 +1101,44 @@ important outstanding step; we flag it here instead of burying it.
 
 \section{Conclusions}\label{conclusions}
 
-Unassigned 2-D HSQC peak lists carry enough supervisory signal to train
-a joint \(^{1}\)H / \(^{13}\)C chemical-shift predictor at label
-efficiencies unreachable by fully supervised methods. The sliced
-sort-match loss turns a 2-D optimal-transport problem into a small
-number of differentiable 1-D sort problems, preserves the
-rearrangement-inequality training-time theorem of 1-D sort-match on
-each projection, and is stable, batchable, and cheap. On a
-1,542-molecule NMRShiftDB2 subset, our four-layer GIN reaches
-\(4.53 \pm 0.11\) ppm \(^{13}\)C and \(0.35 \pm 0.02\) ppm \(^{1}\)H test MAE
-with only \(10\%\) of molecules providing atom-assigned \(^{13}\)C labels
-and no atom-assigned \(^{1}\)H labels at all; layered on top of full
-\(^{13}\)C supervision it reaches \(3.23 \pm 0.10\) ppm and \(0.30 \pm 0.03\)
-ppm. A causal \(^{1}\)H-zeroing audit confirms that the \(^{1}\)H head
-learns from the HSQC signal itself rather than from
-encoder gradient leakage. Bonferroni-corrected split-conformal
-calibration delivers \(94.8\%\) molecule-level coverage at \(\alpha = 0.05\)
-on a held-out test split. On constitutional-isomer discrimination, the
-model is correct on \(77\%\) of candidates and wrong on \(22\%\), giving a
-3.5-fold ratio that is useful for dereplication ranking but not for
-standalone accept/reject decisions. The next step --- and the most
-important outstanding one --- is to run the same pipeline on HSQC peak
-lists scraped from published literature rather than on simulated peak
-lists derived from atom-assigned spectra.
+HSQC multisets \textbf{derived from NMRShiftDB2 atom-assigned spectra}
+carry enough supervisory signal to train a joint \(^{1}\)H / \(^{13}\)C
+chemical-shift predictor without any atom-assigned \(^{1}\)H labels.
+The general feasibility of unassigned-HSQC set supervision for
+joint H/C prediction was established in concurrent work by Jin et
+al.~{[}11{]} via exact Hungarian bipartite matching at million-spectrum
+scale. The contributions of the present paper are four technical
+and statistical advances that sit alongside --- not against --- that
+result, in the order stated in \emph{Background: Related work and
+contributions of this paper}. First, a Bonferroni-corrected
+split-conformal calibration that delivers a rigorous \(94.8\%\)
+molecule-level coverage guarantee at \(\alpha = 0.05\) alongside
+\(95.2\%\) / \(96.7\%\) per-atom coverage; we are not aware of a prior
+NMR chemical-shift predictor that ships with a formal
+molecule-level uncertainty certificate, and Jin et al.~{[}11{]} report
+point predictions only. Second, a causal \(^{1}\)H-zeroing audit
+that rules out gradient leakage from the \(^{13}\)C head as the
+source of the \(^{1}\)H signal and localizes the supervision at the
+HSQC target itself. Third, a sliced sort-match loss that replaces
+the \(O(n^{3})\) Hungarian update with \(K\) differentiable 1-D sort
+problems at \(O(K\,n\log n)\) per molecule, keeping training
+tractable at small-lab scale and batchable through \texttt{torch.sort}.
+Fourth, an explicit constitutional-isomer discrimination
+experiment showing a 3.5-fold correct-to-wrong ratio, positioned
+as a dereplication ranker rather than a standalone accept/reject
+classifier. On a 1,542-molecule NMRShiftDB2
+filtered-subset benchmark, the four-layer GIN reaches
+\(4.53 \pm 0.11\) ppm \(^{13}\)C and \(0.35 \pm 0.02\) ppm \(^{1}\)H test
+MAE with only \(10\%\) atom-assigned \(^{13}\)C labels; layered on full
+\(^{13}\)C supervision the combined recipe reaches \(3.23 \pm 0.10\)
+and \(0.30 \pm 0.03\) ppm. These headline numbers sit behind both
+NMRNet {[}1{]} and Jin et al.~{[}11{]} on absolute accuracy by roughly the
+ratio of training-corpus sizes, and we do not claim otherwise; the
+contributions of this paper are in loss family, audit, calibration,
+and downstream deployment, not in scaling. The single largest
+outstanding step --- running the same pipeline on HSQC peak lists
+scraped from published literature rather than on multisets derived
+from atom-assigned spectra --- is flagged as future work.
 
 \section{Declarations}\label{declarations}
 
@@ -1013,29 +1146,37 @@ lists derived from atom-assigned spectra.
 
 All experiments use the publicly available NMRShiftDB2 SDF dump
 (\texttt{nmrshiftdb2withsignals.sd}), release 2026-03-15, distributed under
-CC-BY-SA via SourceForge. The exact filtered 1,542-molecule subset used
-in this paper is reproducible deterministically from the dataset
-construction filters in \texttt{src/nmr2d/data\_2d.py} applied to seed-0
-random split indices from \texttt{experiments/run\_2d\_experiment.py}. Trained
-model checkpoints, conformal quantile tables, per-seed result JSON
-files, and figure-generation scripts are archived in the public
-repository listed under ``Code availability''.
+CC-BY-SA via SourceForge. The exact filtered 1,542-molecule subset
+used in this paper is reproducible deterministically from the
+dataset construction filters in \texttt{src/nmr2d/data\_2d.py} applied to
+seed-0 random split indices from \texttt{experiments/run\_2d\_experiment.py}.
+Trained model checkpoints, conformal quantile tables, per-seed
+result JSON files, and figure-generation scripts are archived in
+the public repository listed under \emph{Code availability}, at the
+submission-frozen git tag referenced below.
 
 \subsection*{Code availability}
 
-Source code, experiment-orchestration scripts, test harness,
-peer-review response documents, and figure-generation code are
-publicly available at
-\texttt{https://github.com/dongzhaohe321418-lab/nmr-ssl} under the MIT license
-(software) and CC-BY 4.0 (documentation and figures). The end-to-end
-pipeline can be reproduced with
-\texttt{python3\ experiments/run\_option\_b\_master.py\ -\/-seeds\ 0\ 1\ 2}
-(approximately 26 minutes on an Apple M4 Pro with MPS). The causal
-audit runs via \texttt{python3\ experiments/run\_h\_zero\_ablation.py}; the
-Bonferroni-corrected conformal calibration is computed by
-\texttt{python3\ experiments/compute\_bonferroni\_conformal.py}. Operating
+Source code, experiment-orchestration scripts, test harness, and
+figure-generation code are publicly available at
+\texttt{https://github.com/dongzhaohe321418-lab/nmr-ssl} under the MIT
+license (software) and CC-BY 4.0 (documentation and figures). The
+\textbf{submission-frozen version} is archived as the git tag
+\texttt{v2.0-jin-revision} and the corresponding GitHub release. A
+mapping from each table and figure in this paper to its exact
+generation script and result JSON is provided in the file
+\texttt{docs/paper\_final/ARTIFACT\_MAP.md} at that tag, so each headline
+number in the paper can be traced to a specific command. Operating
 system, Python version, and dependency versions are pinned in the
-repository's \texttt{pyproject.toml}.
+repository's \texttt{pyproject.toml}. The end-to-end training pipeline is
+launched by
+\texttt{python3\ experiments/run\_option\_b\_master.py\ -\/-seeds\ 0\ 1\ 2};
+the causal \(^{1}\)H-zeroing audit by
+\texttt{python3\ experiments/run\_h\_zero\_ablation.py};
+and the Bonferroni-corrected conformal calibration by
+\texttt{python3\ experiments/compute\_bonferroni\_conformal.py}. A Zenodo
+DOI for the frozen release will be added to the final
+camera-ready version on acceptance.
 
 \subsection*{Abbreviations}
 
@@ -1066,12 +1207,15 @@ final claims.
 The author thanks the maintainers of NMRShiftDB2 (Kuhn and Schlörer
 {[}9{]}) for making the underlying spectral data freely available under
 CC-BY-SA, and the Yusuf Hamied Department of Chemistry at the
-University of Cambridge for supporting independent open-source work in
-chemoinformatics. Code, figures, and manuscript drafts were developed
-with AI assistance (Anthropic Claude Opus 4.6) under the author's
-direction; the author verified every methodological choice, numerical
-result, and final claim, and every empirical number reported is
-reproducible from the public code repository.
+University of Cambridge for supporting independent open-source work
+in chemoinformatics. Code, figures, and manuscript drafts were
+developed with AI assistance (Anthropic Claude Opus 4.6) under the
+author's direction; the author verified every methodological
+choice and numerical result against the source JSON files in the
+repository, and takes sole responsibility for all final claims.
+Each headline number in this paper is traceable to a specific
+script, seed, and result file at the submission-frozen git tag
+\texttt{v2.0-jin-revision} via the artefact map (see \emph{Code availability}).
 
 \subsection*{Ethics approval and consent to participate}
 
@@ -1085,61 +1229,70 @@ Not applicable.
 
 \section{References}\label{references}
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\item
-  Xu F, Guo W, Wang F, Yao L, Wang H, Tang F, et al.~(2025) Toward a
-  unified benchmark and framework for deep learning-based prediction
-  of nuclear magnetic resonance chemical shifts.
-  Nat Comput Sci 5:292-300. https://doi.org/10.1038/s43588-025-00783-z
-\item
-  Dong Z (2026) A sort-match theorem for unassigned-set regression
-  with application to one-dimensional NMR chemical shift prediction.
-  Preprint, companion to this work, available from the project
-  repository (see Availability of data and materials).
-\item
-  Bonneel N, Rabin J, Peyré G, Pfister H (2015) Sliced and Radon
-  Wasserstein barycenters of measures. J Math Imaging Vis 51:22-45.
-  https://doi.org/10.1007/s10851-014-0506-3
-\item
-  Vovk V, Gammerman A, Shafer G (2005) Algorithmic learning in a
-  random world. Springer, New York.
-  https://doi.org/10.1007/b106715
-\item
-  Lei J, G'Sell M, Rinaldo A, Tibshirani RJ, Wasserman L (2018)
-  Distribution-free predictive inference for regression.
-  J Am Stat Assoc 113:1094-1111.
-  https://doi.org/10.1080/01621459.2017.1307116
-\item
-  Hardy GH, Littlewood JE, Pólya G (1934) Inequalities. Cambridge
-  University Press, Cambridge.
-\item
-  Xu K, Hu W, Leskovec J, Jegelka S (2019) How powerful are graph
-  neural networks? In: Proceedings of the International Conference
-  on Learning Representations (ICLR). https://arxiv.org/abs/1810.00826
-\item
-  Landrum G (2024) RDKit: open-source cheminformatics software.
-  https://www.rdkit.org. Accessed 15 Mar 2026
-\item
-  Kuhn S, Schlörer NE (2015) Facilitating quality control for spectra
-  assignments of small organic molecules: nmrshiftdb2 --- a free
-  in-house NMR database with integrated LIMS for academic service
-  laboratories. Magn Reson Chem 53:582-589.
-  https://doi.org/10.1002/mrc.4263
-\item
-  Paszke A, Gross S, Massa F, Lerer A, Bradbury J, Chanan G, et al.
+\begingroup
+\raggedright
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.45em}
+\sloppy
 
-  \begin{enumerate}
-  \def\labelenumii{(\arabic{enumii})}
-  \setcounter{enumii}{2018}
-  \tightlist
-  \item
-    PyTorch: an imperative style, high-performance deep
-    learning library. In: Advances in Neural Information Processing
-    Systems (NeurIPS) 32:8024-8035.
-    https://arxiv.org/abs/1912.01703
-  \end{enumerate}
-\end{enumerate}
+{[}1{]} Xu F, Guo W, Wang F, Yao L, Wang H, Tang F, et al.~(2025) Toward
+a unified benchmark and framework for deep learning-based prediction
+of nuclear magnetic resonance chemical shifts. \textit{Nat Comput Sci}
+5:292--300. \url{https://doi.org/10.1038/s43588-025-00783-z}
+
+{[}2{]} Dong Z (2026) A sort-match theorem for unassigned-set regression
+with application to one-dimensional NMR chemical shift prediction.
+Companion working note, archived at git tag \texttt{v2.0-jin-revision}
+of the project repository.
+\url{https://github.com/dongzhaohe321418-lab/nmr-ssl/releases/tag/v2.0-jin-revision}
+The theorem and its full proof are reproduced self-contained in
+Supplementary Information \textbf{S8} of the present paper.
+
+{[}3{]} Bonneel N, Rabin J, Peyré G, Pfister H (2015) Sliced and Radon
+Wasserstein barycenters of measures. \textit{J Math Imaging Vis}
+51:22--45. \url{https://doi.org/10.1007/s10851-014-0506-3}
+
+{[}4{]} Vovk V, Gammerman A, Shafer G (2005) \textit{Algorithmic Learning
+in a Random World}. Springer, New York.
+\url{https://doi.org/10.1007/b106715}
+
+{[}5{]} Lei J, G'Sell M, Rinaldo A, Tibshirani RJ, Wasserman L (2018)
+Distribution-free predictive inference for regression.
+\textit{J Am Stat Assoc} 113:1094--1111.
+\url{https://doi.org/10.1080/01621459.2017.1307116}
+
+{[}6{]} Hardy GH, Littlewood JE, Pólya G (1934) \textit{Inequalities}.
+Cambridge University Press, Cambridge.
+
+{[}7{]} Xu K, Hu W, Leskovec J, Jegelka S (2019) How powerful are graph
+neural networks? In: \textit{Proceedings of the International
+Conference on Learning Representations (ICLR)}.
+\url{https://arxiv.org/abs/1810.00826}
+
+{[}8{]} Landrum G (2024) RDKit: open-source cheminformatics software.
+\url{https://www.rdkit.org}. Accessed 15 Mar 2026.
+
+{[}9{]} Kuhn S, Schlörer NE (2015) Facilitating quality control for
+spectra assignments of small organic molecules: nmrshiftdb2 --- a
+free in-house NMR database with integrated LIMS for academic service
+laboratories. \textit{Magn Reson Chem} 53:582--589.
+\url{https://doi.org/10.1002/mrc.4263}
+
+{[}10{]} Paszke A, Gross S, Massa F, Lerer A, Bradbury J, Chanan G,
+et al.~(2019) PyTorch: an imperative style, high-performance deep
+learning library. In: \textit{Advances in Neural Information
+Processing Systems (NeurIPS)} 32:8024--8035.
+\url{https://arxiv.org/abs/1912.01703}
+
+{[}11{]} Jin Y, Wang Y, Wang JJ, Zhu R, Ke G, E W (2026) From human labels
+to literature: semi-supervised learning of NMR chemical shifts at
+scale. \textit{arXiv preprint} arXiv:2601.18524, posted 26 January
+2026. Concurrent independent work: establishes unassigned-HSQC set
+supervision for joint \(^{1}\)H / \(^{13}\)C prediction via exact
+Hungarian bipartite matching at million-spectrum scale.
+\url{https://arxiv.org/abs/2601.18524}
+
+\endgroup
 
 \section{Supplementary Information}\label{supplementary-information}
 
@@ -1334,5 +1487,135 @@ dimension-2 sliced Wasserstein, and that the gradient is finite and
 non-NaN end-to-end. The verification test is
 \texttt{tests/test\_theorem\_2d.py}; it reproduces the mean ratio and
 gradient-norm numbers to within the stated tolerances.
+
+\subsection*{S8. Self-contained statement and proof of the 1-D sort-match theorem}
+
+This section states and proves the 1-D sort-match theorem used in
+\emph{Methods: Set-valued NMR supervision} and cited in the second half
+of \emph{Background: Related work and contributions} (third contribution).
+The proof is a direct application of the Hardy--Littlewood--Pólya
+rearrangement inequality {[}6{]} and is included here so that the
+methodological backbone of the present paper is self-contained
+within a single archival document, independently of any companion
+preprint.
+
+\textbf{Setup.} Fix an integer \(n \geq 1\). Let
+\(\mathbf{x} = (x_{1}, \dots, x_{n})\) and
+\(\mathbf{y} = (y_{1}, \dots, y_{n})\) be two real-valued tuples of
+the same length. Write
+\(x_{(1)} \leq x_{(2)} \leq \dots \leq x_{(n)}\) for the order
+statistics of \(\mathbf{x}\) (and similarly \(y_{(i)}\)). For a
+permutation \(\pi \in S_{n}\) define the matched squared error
+\[
+\Phi(\pi; \mathbf{x}, \mathbf{y})
+\;\;=\;\;
+\sum_{i=1}^{n} \bigl(x_{i} - y_{\pi(i)}\bigr)^{2},
+\]
+and the sort-matched squared error
+\[
+\Phi_{\mathrm{sort}}(\mathbf{x}, \mathbf{y})
+\;\;=\;\;
+\sum_{i=1}^{n} \bigl(x_{(i)} - y_{(i)}\bigr)^{2}.
+\]
+
+\textbf{Theorem S8.1 (1-D sort-match is optimal bipartite matching).} For
+all \(\mathbf{x}, \mathbf{y} \in \mathbb{R}^{n}\),
+\[
+\min_{\pi \in S_{n}}
+   \Phi(\pi; \mathbf{x}, \mathbf{y})
+\;\;=\;\;
+\Phi_{\mathrm{sort}}(\mathbf{x}, \mathbf{y}).
+\]
+
+\emph{Proof.} Expand the squared error:
+\[
+\sum_{i=1}^{n}(x_{i} - y_{\pi(i)})^{2}
+\;\;=\;\;
+\sum_{i=1}^{n} x_{i}^{2}
+\;+\;
+\sum_{i=1}^{n} y_{\pi(i)}^{2}
+\;-\;
+2\sum_{i=1}^{n} x_{i}\,y_{\pi(i)}.
+\]
+The first sum does not depend on \(\pi\). Because \(\pi\) is a bijection
+of \(\{1, \dots, n\}\), the second sum equals
+\(\sum_{j} y_{j}^{2}\) and is also independent of \(\pi\). The third
+term is the inner product of \(\mathbf{x}\) with a permutation of
+\(\mathbf{y}\).
+
+By the Hardy--Littlewood--Pólya rearrangement inequality {[}6, §10.2{]},
+for any real sequences \(a_{1} \leq \dots \leq a_{n}\) and
+\(b_{1} \leq \dots \leq b_{n}\), and any permutation \(\sigma \in S_{n}\),
+\[
+\sum_{i=1}^{n} a_{i}\,b_{\sigma(i)}
+\;\;\leq\;\;
+\sum_{i=1}^{n} a_{i}\,b_{i},
+\]
+with the maximum on the right attained when \(\sigma\) is the
+identity (i.e.~both sequences sorted in the same order). Applying
+this with \(a_{i} = x_{(i)}\) and \(b_{i} = y_{(i)}\), and absorbing
+the permutation \(\pi\) of the unsorted tuples into the permutation
+\(\sigma\) of the sorted tuples, the inner product
+\(\sum_{i} x_{i}\,y_{\pi(i)}\) is \textbf{maximized} over
+\(\pi \in S_{n}\) precisely when the two tuples are co-sorted ---
+that is, when the permutation \(\pi\) is the one that sorts \(\mathbf{y}\)
+into the same order as \(\mathbf{x}\). Equivalently, after first
+sorting \(\mathbf{x}\), the optimal matched assignment is
+\((x_{(1)}, y_{(1)}), (x_{(2)}, y_{(2)}), \dots, (x_{(n)}, y_{(n)})\).
+
+Therefore
+\[
+\max_{\pi}\, \sum_{i=1}^{n} x_{i}\,y_{\pi(i)}
+\;\;=\;\;
+\sum_{i=1}^{n} x_{(i)}\,y_{(i)},
+\]
+which in turn gives
+\[
+\min_{\pi}\, \Phi(\pi; \mathbf{x}, \mathbf{y})
+\;\;=\;\;
+\sum_{i=1}^{n} x_{i}^{2}
+\,+\,
+\sum_{i=1}^{n} y_{i}^{2}
+\,-\,
+2\sum_{i=1}^{n} x_{(i)}\,y_{(i)}
+\;\;=\;\;
+\sum_{i=1}^{n} \bigl(x_{(i)} - y_{(i)}\bigr)^{2}
+\;\;=\;\;
+\Phi_{\mathrm{sort}}(\mathbf{x}, \mathbf{y}),
+\]
+establishing the theorem. \(\square\)
+
+\textbf{Remark S8.2 (ties and multisets).} The theorem as stated holds
+for real tuples; an identical argument gives the multiset version,
+because the order statistics are well-defined under any consistent
+tie-breaking rule and the rearrangement inequality is insensitive
+to tie breaking.
+
+\textbf{Remark S8.3 (from \(n^{3}\) Hungarian to \(n\log n\) sort).} The
+optimal bipartite matching between two \(n\)-point sets in \(\mathbb{R}\)
+is achievable by any algorithm that solves the assignment problem
+with cost \(\|x_{i} - y_{j}\|^{2}\); in general this requires the
+Hungarian algorithm at \(O(n^{3})\). Theorem S8.1 reduces the 1-D
+case to a sort, at \(O(n \log n)\), with no loss of optimality. It
+is this reduction --- extended to \(d\) dimensions by the
+sliced-Wasserstein construction {[}3{]} --- that underlies the
+\(O(K\,n \log n)\) complexity of the sliced sort-match loss in the
+present paper, and that motivates our use of a cheap approximation
+in place of the exact Hungarian loss used by Jin et al.~{[}11{]}.
+
+\textbf{Remark S8.4 (why the 2-D problem does not reduce to a single sort).}
+In \(\mathbb{R}^{d}\) with \(d \geq 2\), the optimal-transport problem
+between two empirical point distributions does not in general admit
+a one-dimensional sort-based closed form, and Theorem S8.1 does not
+extend to \(d \geq 2\) directly. The sliced-Wasserstein construction
+of Bonneel et al.~{[}3{]} uses this observation constructively: it
+expresses the \(d\)-dimensional problem as an expectation, over
+random one-dimensional projections, of one-dimensional problems,
+each of which is solved exactly by Theorem S8.1 applied to the
+projected tuples. The sliced Monte-Carlo estimator of \(SW_{2}^{2}\)
+is therefore an unbiased average of \(K\) exact 1-D solutions, and
+our training loss \(\mathcal{L}_{\mathrm{SSW}}\) in \emph{Methods:
+Sliced approximation} is a direct Monte-Carlo estimator of \(SW_{2}^{2}\)
+built on \(K\) independent applications of Theorem S8.1.
 
 \end{document}

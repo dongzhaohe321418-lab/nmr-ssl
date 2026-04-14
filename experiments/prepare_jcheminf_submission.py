@@ -28,6 +28,8 @@ PREAMBLE = ROOT / "docs" / "paper_final" / "preamble.tex"
 FIGURES_DIR = ROOT / "docs" / "2d" / "figures"
 OUT_DIR = ROOT / "docs" / "paper_final" / "jcheminf_submission"
 ZIP_PATH = ROOT / "docs" / "paper_final" / "jcheminf_submission.zip"
+ARTIFACT_MAP = ROOT / "docs" / "paper_final" / "ARTIFACT_MAP.md"
+COVER_LETTER_PDF = ROOT / "docs" / "paper_final" / "cover_letter.pdf"
 
 FIGURES_NEEDED = [
     "fig_v4_headline.pdf",
@@ -184,6 +186,12 @@ def main() -> None:
 
     # Step 6: README
     (OUT_DIR / "README.txt").write_text(README)
+
+    # Step 6b: ARTIFACT_MAP.md and cover_letter.pdf bundled with the zip
+    if ARTIFACT_MAP.exists():
+        shutil.copy(ARTIFACT_MAP, OUT_DIR / "ARTIFACT_MAP.md")
+    if COVER_LETTER_PDF.exists():
+        shutil.copy(COVER_LETTER_PDF, OUT_DIR / "cover_letter.pdf")
 
     # Step 7: zip it
     if ZIP_PATH.exists():
