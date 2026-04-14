@@ -62,18 +62,27 @@ def main():
     ax = axes[1]
     bars = ax.bar(x, h_vals, color=colors, edgecolor="black", linewidth=0.6, width=0.55)
     for b, v in zip(bars, h_vals):
-        ax.text(b.get_x() + b.get_width() / 2, v + 0.1, f"{v:.2f}", ha="center", va="bottom", fontsize=9)
+        ax.text(b.get_x() + b.get_width() / 2, v + 0.08, f"{v:.2f}", ha="center", va="bottom", fontsize=9)
     ax.set_xticks(x)
     ax.set_xticklabels(labels, fontsize=8)
     ax.set_ylabel("$^{1}$H test MAE (ppm)")
-    ax.set_title("(b) $^{1}$H collapses $\\sim$10$\\times$")
+    ax.set_title("(b) $^{1}$H collapses when HSQC $^{1}$H zeroed")
     ax.set_ylim(0, max(h_vals) * 1.32)
 
-    ax.annotate("", xy=(2, baseline_h + 0.18), xytext=(1, hz_h - 0.35),
-                arrowprops=dict(arrowstyle="->", color=RED, lw=1.5))
-    ax.text(1.5, (hz_h + baseline_h) / 2 + 0.15,
-            f"{hz_h / baseline_h:.0f}$\\times$",
-            color=RED, fontsize=11, fontweight="bold", ha="center")
+    # Formal reference: dashed horizontal line at the full-HSQC baseline,
+    # labelled "baseline" on the right.
+    ax.axhline(baseline_h, xmin=0.05, xmax=0.95, ls="--", color="#555555", lw=0.8)
+    ax.text(-0.05, baseline_h + 0.05, "full-HSQC baseline",
+            color="#555555", fontsize=8, ha="left", va="bottom", style="italic")
+
+    # Formal ratio annotation: small bracket-free label between the two
+    # 2-D SSL bars, rendered in neutral black, no arrow.
+    ratio = hz_h / baseline_h
+    ax.text(1.5, max(h_vals) * 1.18,
+            rf"$\mathrm{{MAE}}_{{\text{{zeroed}}}} / \mathrm{{MAE}}_{{\text{{baseline}}}} = {ratio:.1f}$",
+            color="black", fontsize=9, ha="center", va="center",
+            bbox=dict(boxstyle="round,pad=0.3", facecolor="white",
+                      edgecolor="#888888", linewidth=0.5))
 
     fig.tight_layout()
     for ext in ("png", "pdf"):
