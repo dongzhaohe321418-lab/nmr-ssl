@@ -41,7 +41,7 @@ def main():
     fig, axes = plt.subplots(1, 2, figsize=(6.5, 3.0))
 
     ax = axes[0]
-    ax.plot(pct, sup_c, "s--", color=BLUE, linewidth=1.8, markersize=8, label="Supervised-1D")
+    ax.plot(pct, sup_c, "s--", color=BLUE, linewidth=1.8, markersize=8, label="Supervised-1-D")
     ax.plot(pct, ssl_c, "o-",  color=GREEN, linewidth=2.0, markersize=9, label="2-D SSL (ours)")
     ax.set_xscale("log")
     ax.set_xticks(pct); ax.set_xticklabels([f"{p:g}%" for p in pct])
@@ -52,7 +52,7 @@ def main():
     ax.legend(frameon=False, loc="upper right")
 
     ax = axes[1]
-    ax.plot(pct, sup_h, "s--", color=BLUE, linewidth=1.8, markersize=8, label="Supervised-1D (random)")
+    ax.plot(pct, sup_h, "s--", color=BLUE, linewidth=1.8, markersize=8, label="Supervised-1-D (random)")
     ax.plot(pct, ssl_h, "o-",  color=ORANGE, linewidth=2.0, markersize=9, label="2-D SSL (ours)")
     ax.set_xscale("log")
     ax.set_xticks(pct); ax.set_xticklabels([f"{p:g}%" for p in pct])
