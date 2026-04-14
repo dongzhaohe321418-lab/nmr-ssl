@@ -1,0 +1,113 @@
+
+\usepackage{fontspec}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{placeins}  % for FloatBarrier
+% Force pandoc-generated \begin{figure} to use [htbp] not just default,
+% and prevent figures from drifting too far from their reference point.
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\bottomfraction}{0.95}
+\renewcommand{\floatpagefraction}{0.85}
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{caption}
+\usepackage{xcolor}
+\usepackage{lastpage}
+\usepackage[most]{tcolorbox}
+
+% --- section formatting -------------------------------------------------
+\titleformat{\section}{\Large\bfseries\sffamily\raggedright}{\thesection}{1em}{}
+\titleformat{\subsection}{\large\bfseries\sffamily\raggedright}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\itshape\raggedright}{\thesubsubsection}{1em}{}
+
+\titlespacing*{\section}{0pt}{1.5em}{0.6em}
+\titlespacing*{\subsection}{0pt}{1.0em}{0.4em}
+
+% --- running header / footer -------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancyhead[L]{\footnotesize\textsf{NMR 2-D HSQC sort-match SSL}}
+\fancyhead[R]{\footnotesize\textsf{final paper, April 2026}}
+\fancyfoot[C]{\thepage~/~\pageref{LastPage}}
+
+% --- abstract box ------------------------------------------------------
+\newtcolorbox{abstractbox}{
+    enhanced, breakable,
+    colback=blue!3!white, colframe=blue!40!black,
+    boxrule=0.5pt, arc=1.5pt,
+    left=10pt, right=10pt, top=6pt, bottom=6pt,
+}
+
+% --- figure / table captions ------------------------------------------
+\captionsetup[figure]{font=small,labelfont={bf,sf},labelsep=period,justification=raggedright,singlelinecheck=false}
+\captionsetup[table]{font=small,labelfont={bf,sf},labelsep=period,justification=raggedright,singlelinecheck=false}
+
+% --- compact bullet lists -----------------------------------------------
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\providecommand{\passthrough}[1]{#1}
+\providecommand{\pandocbounded}[1]{#1}
+
+% --- miscellaneous ------------------------------------------------------
+\setlength{\parskip}{0.55em}
+\setlength{\parindent}{0pt}
+\linespread{1.12}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+
+% --- colour links ------------------------------------------------------
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!55!black,
+    urlcolor=blue!55!black,
+    citecolor=blue!55!black,
+    breaklinks=true,
+    pdftitle={Learning 1H and 13C NMR chemical shifts jointly from unassigned 2-D HSQC peak sets},
+    pdfauthor={Zhaohe Dong (Yusuf Hamied Department of Chemistry, University of Cambridge)},
+    pdfsubject={Semi-supervised NMR chemical shift prediction with sliced-Wasserstein sort-match loss},
+    pdfkeywords={NMR, HSQC, semi-supervised learning, sliced Wasserstein, conformal prediction, dereplication}
+}
+
+% --- allow URLs to break at any character (for long github urls) -------
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\makeatother
+\urlstyle{same}
+
+% --- title block --------------------------------------------------------
+\makeatletter
+\def\maketitle{%
+  \newpage\null
+  \begin{center}
+    {\LARGE\bfseries\sffamily\@title\par}
+    \vspace{0.8em}
+    {\large\sffamily\itshape A sliced sort-match weak-supervision recipe,\\
+     causally audited and calibrated for dereplication\par}
+    \vspace{1.2em}
+    {\large\sffamily Zhaohe Dong\textsuperscript{1,*}\par}
+    \vspace{0.6em}
+    {\footnotesize\textsuperscript{1}Yusuf Hamied Department of Chemistry,
+     University of Cambridge, Lensfield Road, Cambridge CB2~1EW, United
+     Kingdom.\par}
+    \vspace{0.3em}
+    {\footnotesize\textsuperscript{*}Correspondence:
+     \href{mailto:zd314@cam.ac.uk}{\texttt{zd314@cam.ac.uk}}\par}
+    \vspace{0.8em}
+    {\footnotesize April 2026}
+  \end{center}
+  \vspace{1.2em}
+}
+\makeatother
