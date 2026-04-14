@@ -69,19 +69,14 @@ def main():
     ax.set_title("(b) $^{1}$H collapses when HSQC $^{1}$H zeroed")
     ax.set_ylim(0, max(h_vals) * 1.32)
 
-    # Formal reference: dashed horizontal line at the full-HSQC baseline,
-    # labelled "baseline" on the right.
-    ax.axhline(baseline_h, xmin=0.05, xmax=0.95, ls="--", color="#555555", lw=0.8)
-    ax.text(-0.05, baseline_h + 0.05, "full-HSQC baseline",
-            color="#555555", fontsize=8, ha="left", va="bottom", style="italic")
-
-    # Formal ratio annotation: small bracket-free label between the two
-    # 2-D SSL bars, rendered in neutral black, no arrow.
+    # Formal ratio annotation: a clean boxed equation centered above the
+    # bars, no arrows, no reference line. The bar heights already show
+    # the collapse visually; the equation quantifies it.
     ratio = hz_h / baseline_h
-    ax.text(1.5, max(h_vals) * 1.18,
-            rf"$\mathrm{{MAE}}_{{\text{{zeroed}}}} / \mathrm{{MAE}}_{{\text{{baseline}}}} = {ratio:.1f}$",
+    ax.text(1.0, max(h_vals) * 1.20,
+            rf"$\mathrm{{MAE}}_{{\text{{H-zeroed}}}} \, / \, \mathrm{{MAE}}_{{\text{{baseline}}}} = {ratio:.1f}$",
             color="black", fontsize=9, ha="center", va="center",
-            bbox=dict(boxstyle="round,pad=0.3", facecolor="white",
+            bbox=dict(boxstyle="round,pad=0.35", facecolor="white",
                       edgecolor="#888888", linewidth=0.5))
 
     fig.tight_layout()
