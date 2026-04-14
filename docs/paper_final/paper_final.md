@@ -423,6 +423,8 @@ $^{13}$C supervised loss as the training signal for the $^{1}$H head,
 and localizes the training signal at the HSQC target itself.
 ](../2d/figures/fig_h_zero.pdf)
 
+\clearpage
+
 \subsection*{Combined supervision and the full-label regime}
 
 An obvious objection is that the 2-D SSL loss might only help in the

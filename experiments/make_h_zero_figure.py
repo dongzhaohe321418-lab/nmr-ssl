@@ -38,15 +38,15 @@ def main():
     sup1d_c = 5.600
 
     labels = [
-        "Supervised-1-D\n($^{1}$H head untrained)",
-        "2-D SSL\n(HSQC $^{1}$H zeroed)",
-        "2-D SSL\n(full HSQC)",
+        "Supervised-1-D ($^{1}$H head untrained)",
+        "2-D SSL (HSQC $^{1}$H zeroed)",
+        "2-D SSL (full HSQC)",
     ]
     c_vals = [sup1d_c, hz_c, baseline_c]
     h_vals = [sup1d_h, hz_h, baseline_h]
     colors = [GRAY, RED, GREEN]
 
-    fig, axes = plt.subplots(1, 2, figsize=(7.4, 3.6))
+    fig, axes = plt.subplots(1, 2, figsize=(7.6, 3.8))
     x = np.arange(len(labels))
 
     ax = axes[0]
@@ -54,7 +54,7 @@ def main():
     for b, v in zip(bars, c_vals):
         ax.text(b.get_x() + b.get_width() / 2, v + 0.1, f"{v:.2f}", ha="center", va="bottom", fontsize=9)
     ax.set_xticks(x)
-    ax.set_xticklabels(labels, fontsize=8)
+    ax.set_xticklabels(labels, fontsize=8, rotation=25, ha="right")
     ax.set_ylabel("$^{13}$C test MAE (ppm)")
     ax.set_title("(a) $^{13}$C unaffected")
     ax.set_ylim(0, max(c_vals) * 1.22)
@@ -64,7 +64,7 @@ def main():
     for b, v in zip(bars, h_vals):
         ax.text(b.get_x() + b.get_width() / 2, v + 0.08, f"{v:.2f}", ha="center", va="bottom", fontsize=9)
     ax.set_xticks(x)
-    ax.set_xticklabels(labels, fontsize=8)
+    ax.set_xticklabels(labels, fontsize=8, rotation=25, ha="right")
     ax.set_ylabel("$^{1}$H test MAE (ppm)")
     ax.set_title("(b) $^{1}$H collapses when HSQC $^{1}$H zeroed")
     ax.set_ylim(0, max(h_vals) * 1.32)
