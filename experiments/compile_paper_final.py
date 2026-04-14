@@ -75,6 +75,16 @@ PREAMBLE = r"""
 \usepackage{url}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{booktabs}
+\usepackage{placeins}  % for FloatBarrier
+% Force pandoc-generated \begin{figure} to use [htbp] not just default,
+% and prevent figures from drifting too far from their reference point.
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\bottomfraction}{0.95}
+\renewcommand{\floatpagefraction}{0.85}
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
 \usepackage{float}
 \usepackage{longtable}
 \usepackage{tabularx}

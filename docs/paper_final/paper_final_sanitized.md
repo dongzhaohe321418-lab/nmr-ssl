@@ -240,7 +240,7 @@ gradient clipping L2 $=$ 5, and best-val-$^{13}$C-MAE early stopping.
 
 | Variant | $^{13}$C MAE (ppm) | $^{1}$H MAE (ppm) |
 |---|---|---|
-| Supervised-1D ($10\%$ labelled, $^{13}$C only) | $5.60 \pm 0.34$ | $2.47 \pm 0.38$ (untrained) |
+| Supervised-1-D ($10\%$ labelled, $^{13}$C only) | $5.60 \pm 0.34$ | $2.47 \pm 0.38$ (untrained) |
 | 1-D sort-match SSL ($10\%$ labelled, prior work)$^{2}$ | $4.56 \pm 0.31$ | $2.61 \pm 0.32$ (untrained) |
 | **2-D SSL** ($10\%$ labelled, $\lambda=2$, $K=16$) | $\mathbf{4.53 \pm 0.11}$ | $\mathbf{0.35 \pm 0.02}$ |
 | **2-D SSL + full $^{13}$C** (combined) | $\mathbf{3.23 \pm 0.10}$ | $\mathbf{0.30 \pm 0.03}$ |
@@ -326,10 +326,10 @@ because the HSQC supervision is decoupled from the $^{13}$C label
 fraction.
 
 ![Label-efficiency curve. (a) $^{13}$C MAE as a function
-of the $^{13}$C-labelled fraction. Supervised-1D (blue dashed) is
+of the $^{13}$C-labelled fraction. Supervised-1-D (blue dashed) is
 useless below $10\%$ labels; 2-D SSL (green solid) remains within
 6 ppm across the entire range and tracks supervised-1D above $50\%$
-labels. (b) $^{1}$H MAE. Supervised-1D is pinned at the random floor
+labels. (b) $^{1}$H MAE. Supervised-1-D is pinned at the random floor
 ($\sim\!3$ ppm) because its $^{1}$H head receives no training signal;
 2-D SSL delivers sub-0.45 ppm $^{1}$H at every label fraction.
 ](../2d/figures/fig_label_sweep.pdf)
@@ -368,18 +368,20 @@ controls, at per-atom conformal $\alpha = 0.05$.
 | Scaffold neighbour | $62.4\%$ (n=93) | $5.2\%$ | $12\times$ |
 | Random pair (lower bound) | $72.9\%$ (n=155) | $1.3\%$ | $55\times$ |
 
-![Wrong-candidate discrimination on the three graded controls. Green
-bars are the joint pass rate on the correct structure; red bars are
-the joint pass rate when the observed HSQC is checked against a wrong
-candidate of the indicated type. Numbers at the top of each group
-give the correct-to-wrong ratio. Constitutional isomer (same molecular
-formula, different connectivity) is the chemistry-meaningful control
-and the number to trust: $77\%$ correct vs $22\%$ wrong, a $3.5\times$
-discrimination. Scaffold neighbour is an intermediate case at
-$12\times$; random pair is a soft lower bound at
-$55\times$.](../2d/figures/fig_wrong_struct_v4.pdf)
+\clearpage
 
-A 22% false-positive rate on constitutional isomers is too high for a
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.92\linewidth]{/Users/ericdong/nmr-ssl/docs/2d/figures/fig_wrong_struct_v4.pdf}
+\caption{\textbf{Joint pass rates on the three wrong-candidate controls.}
+Green bars are the joint pass rate for the correct structure; red bars
+are the joint pass rate for the wrong candidate. Numbers above each
+group are the correct-to-wrong discrimination ratio. The constitutional
+isomer control (same molecular formula, different connectivity) is the
+chemistry-meaningful number for natural-product dereplication.}
+\end{figure}
+
+A $22\%$ false-positive rate on constitutional isomers is too high for a
 standalone binary accept/reject system. The use case this supports is
 candidate ranking: given a list of plausible structures for an unknown
 compound, rank them by their worst-residual score against the observed
@@ -500,10 +502,14 @@ molecules is the direct way to bring this tail down.
 \subsection*{3.10 Split-conformal calibration and the molecule-level coverage question}
 
 Split-conformal calibration on the validation split (Section 5.5)
-gives quantiles of $q_{C} = 13.4$ ppm and $q_{H} = 1.03$ ppm at the
-nominal per-atom level $\alpha = 0.05$. The corresponding empirical
-test-set coverage is $95.2\%$ on $^{13}$C and $96.7\%$ on $^{1}$H, in
-both cases at the nominal target.
+gives quantiles of $q_{C} \approx 14.8$ ppm and $q_{H} \approx 1.06$
+ppm at the nominal per-atom level $\alpha = 0.05$, with empirical
+test-set coverage of $95.2\%$ on $^{13}$C and $96.7\%$ on $^{1}$H.
+The Bonferroni table below was computed on a parallel calibration
+run on the same validation split with marginally tighter quantiles
+($q_{C} = 13.4$ ppm, $q_{H} = 1.03$ ppm); the small numerical
+difference reflects validation-split sampling variance and is
+unimportant for the per-atom-versus-Bonferroni comparison.
 
 A molecule-level "all peaks of this molecule lie within their
 conformal intervals" decision is not the same statistical object as
@@ -585,8 +591,8 @@ We state these explicitly; each is a concrete direction for future work.
    substitute for an actual scraped-literature evaluation. **This is
    the single largest outstanding gap.**
 
-2. **Absolute accuracy below published SOTA.** NMRNet achieves
-   $1.10$ ppm $^{13}$C and $0.18$ ppm $^{1}$H$^{1}$ on the full
+2. **Absolute accuracy below published SOTA.** NMRNet$^{1}$ achieves
+   $1.10$ ppm $^{13}$C and $0.18$ ppm $^{1}$H on the full
    $\sim\!15{,}000$-molecule NMRShiftDB2 corpus; our combined variant
    reaches $3.23$ ppm $^{13}$C and $0.30$ ppm $^{1}$H on 1,542
    molecules. The $^{13}$C gap is explained by the scale difference;
@@ -695,9 +701,12 @@ collect per-atom absolute residuals
 $|\hat{\delta} - \delta^{\star}|$ on the held-out validation split
 (150 molecules, 1,959 $^{13}$C atoms and 1,307 $^{1}$H atoms). We
 take the finite-sample-corrected $(1-\alpha)$ empirical quantile at
-$\alpha = 0.05$, giving $q_{C} = 13.4$ ppm and $q_{H} = 1.03$ ppm.
-Empirical test-set coverage at this level is $95.2\%$ on $^{13}$C
-and $96.7\%$ on $^{1}$H.
+$\alpha = 0.05$. The chemistry-demonstration calibration run yields
+$q_{C} \approx 14.8$ ppm and $q_{H} \approx 1.06$ ppm with empirical
+test-set coverage of $95.2\%$ on $^{13}$C and $96.7\%$ on $^{1}$H;
+the parallel run used for the Bonferroni table (Table 8) gives
+slightly tighter quantiles $q_{C} = 13.4$ ppm and $q_{H} = 1.03$
+ppm on the same validation split, well within sampling variance.
 For the molecule-level Bonferroni correction we precompute a lookup
 table of per-$k$ quantiles at $\alpha_{\text{atom}} =
 \alpha_{\text{mol}}/(2k)$ and apply the molecule-appropriate quantile

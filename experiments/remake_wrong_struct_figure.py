@@ -64,34 +64,37 @@ def main():
     x = np.arange(len(labels))
     w = 0.36
 
-    fig, ax = plt.subplots(figsize=(6.5, 3.4))
+    fig, ax = plt.subplots(figsize=(6.2, 2.9))
 
     b1 = ax.bar(x - w / 2, correct, w, color=GREEN, edgecolor="black",
-                linewidth=0.7, label="Correct structure")
+                linewidth=0.6, label="Correct structure")
     b2 = ax.bar(x + w / 2, wrong, w, color=RED, edgecolor="black",
-                linewidth=0.7, label="Wrong candidate")
+                linewidth=0.6, label="Wrong candidate")
 
     for b, v in zip(b1, correct):
-        ax.text(b.get_x() + b.get_width() / 2, v + 1.5, f"{v:.0f}%",
-                ha="center", va="bottom", fontsize=10, color="black")
+        ax.text(b.get_x() + b.get_width() / 2, v + 2.0, f"{v:.0f}%",
+                ha="center", va="bottom", fontsize=9, color="black")
     for b, v in zip(b2, wrong):
-        ax.text(b.get_x() + b.get_width() / 2, v + 1.5, f"{v:.0f}%",
-                ha="center", va="bottom", fontsize=10, color=RED)
+        ax.text(b.get_x() + b.get_width() / 2, v + 2.0, f"{v:.0f}%",
+                ha="center", va="bottom", fontsize=9, color=RED)
 
     # Discrimination ratio annotation above each group
     for i, r in enumerate(ratio):
-        ax.text(i, 108, rf"${r:.1f}\times$",
-                ha="center", va="bottom", fontsize=11, fontweight="bold",
+        ax.text(i, 92, rf"${r:.1f}\times$",
+                ha="center", va="bottom", fontsize=9, fontweight="bold",
                 color="black")
 
     ax.set_xticks(x)
-    ax.set_xticklabels(labels, fontsize=10)
-    ax.set_ylabel("Joint pass rate (%)")
-    ax.set_ylim(0, 130)
-    ax.set_yticks([0, 20, 40, 60, 80, 100])
-    # Put legend below the plot so it does not collide with any bar
-    ax.legend(frameon=False, loc="upper center", fontsize=10,
-              bbox_to_anchor=(0.5, -0.22), ncol=2, handlelength=1.5)
+    ax.set_xticklabels(labels, fontsize=9)
+    ax.set_ylabel("Joint pass rate (%)", fontsize=10)
+    ax.set_ylim(0, 105)
+    ax.set_yticks([0, 25, 50, 75, 100])
+    ax.tick_params(axis="y", labelsize=9)
+    # Legend ABOVE the plot area, horizontal, to avoid colliding with
+    # the discrimination-ratio annotations and bar value labels.
+    ax.legend(frameon=False, loc="lower center", bbox_to_anchor=(0.5, 1.02),
+              ncol=2, fontsize=9, handlelength=1.2, handletextpad=0.4,
+              columnspacing=1.5)
 
     fig.tight_layout()
     for ext in ("png", "pdf"):

@@ -38,15 +38,15 @@ def main():
     sup1d_c = 5.600
 
     labels = [
-        "Supervised-1D\n($^{1}$H head untrained)",
+        "Supervised-1-D\n($^{1}$H head untrained)",
         "2-D SSL\n(HSQC $^{1}$H zeroed)",
-        "2-D SSL\n(full HSQC, baseline)",
+        "2-D SSL\n(full HSQC)",
     ]
     c_vals = [sup1d_c, hz_c, baseline_c]
     h_vals = [sup1d_h, hz_h, baseline_h]
     colors = [GRAY, RED, GREEN]
 
-    fig, axes = plt.subplots(1, 2, figsize=(6.5, 3.0))
+    fig, axes = plt.subplots(1, 2, figsize=(7.4, 3.6))
     x = np.arange(len(labels))
 
     ax = axes[0]
@@ -56,7 +56,7 @@ def main():
     ax.set_xticks(x)
     ax.set_xticklabels(labels, fontsize=8)
     ax.set_ylabel("$^{13}$C test MAE (ppm)")
-    ax.set_title("(a) $^{13}$C — unaffected by HSQC $^{1}$H zeroing")
+    ax.set_title("(a) $^{13}$C unaffected")
     ax.set_ylim(0, max(c_vals) * 1.22)
 
     ax = axes[1]
@@ -66,17 +66,15 @@ def main():
     ax.set_xticks(x)
     ax.set_xticklabels(labels, fontsize=8)
     ax.set_ylabel("$^{1}$H test MAE (ppm)")
-    ax.set_title("(b) $^{1}$H — collapses $\\sim$10$\\times$ when HSQC $^{1}$H zeroed")
-    ax.set_ylim(0, max(h_vals) * 1.25)
+    ax.set_title("(b) $^{1}$H collapses $\\sim$10$\\times$")
+    ax.set_ylim(0, max(h_vals) * 1.32)
 
-    # Annotate the ~10x collapse with a subtle red bracket between red and green bars
     ax.annotate("", xy=(2, baseline_h + 0.18), xytext=(1, hz_h - 0.35),
                 arrowprops=dict(arrowstyle="->", color=RED, lw=1.5))
-    ax.text(1.5, (hz_h + baseline_h) / 2 + 0.1,
+    ax.text(1.5, (hz_h + baseline_h) / 2 + 0.15,
             f"{hz_h / baseline_h:.0f}$\\times$",
             color=RED, fontsize=11, fontweight="bold", ha="center")
 
-    fig.subplots_adjust(bottom=0.22, wspace=0.3)
     fig.tight_layout()
     for ext in ("png", "pdf"):
         fig.savefig(OUT / f"fig_h_zero.{ext}", bbox_inches="tight")
