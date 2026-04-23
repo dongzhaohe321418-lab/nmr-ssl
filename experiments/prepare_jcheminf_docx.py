@@ -26,6 +26,7 @@ FIGURES = ROOT / "docs" / "2d" / "figures"
 OUT_DIR = ROOT / "docs" / "paper_final"
 DOCX = OUT_DIR / "manuscript.docx"
 WORK_MD = OUT_DIR / "paper_final_docx.md"
+REF_DOCX = OUT_DIR / "reference.docx"
 
 
 # --- Unicode replacements (reverse of compile_paper_final.py) --------
@@ -158,20 +159,19 @@ def main() -> None:
     header = (
         "---\n"
         "title: |\n"
-        "  Learning ^1^H and ^13^C NMR chemical shifts jointly\n"
+        "  Learning $^{1}$H and $^{13}$C NMR chemical shifts jointly\n"
         "  from unassigned 2-D HSQC peak sets\n"
         "subtitle: |\n"
         "  A sliced sort-match weak-supervision recipe,\n"
         "  causally audited and calibrated for dereplication\n"
-        "author:\n"
-        "  - name: Zhaohe Dong\n"
-        "    affiliation: |\n"
-        "      Yusuf Hamied Department of Chemistry, University of\n"
-        "      Cambridge, Lensfield Road, Cambridge CB2 1EW, United Kingdom\n"
-        "    email: zd314@cam.ac.uk\n"
+        "author: |\n"
+        "  Zhaohe Dong^1,\\*^\n"
+        "  \n"
+        "  ^1^ Yusuf Hamied Department of Chemistry, University of\n"
+        "  Cambridge, Lensfield Road, Cambridge CB2 1EW, United Kingdom.\n"
+        "  \n"
+        "  \\* Correspondence: zd314@cam.ac.uk\n"
         "date: April 2026\n"
-        "abstract: |\n"
-        "  See structured abstract in the manuscript body.\n"
         "---\n\n"
     )
     md = header + md
@@ -187,9 +187,11 @@ def main() -> None:
         "--resource-path", str(FIGURES) + ":" + str(OUT_DIR),
         "--wrap=preserve",
         "--standalone",
-        "--number-sections",        # Number headings for easier reviewer ref
         "--reference-links",
     ]
+    # Use custom reference doc if available (sets fonts, headers, footers)
+    if REF_DOCX.exists():
+        cmd.extend(["--reference-doc", str(REF_DOCX)])
     r = subprocess.run(cmd, capture_output=True, text=True)
     if r.returncode != 0:
         print("PANDOC FAILED:", file=sys.stderr)
